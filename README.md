@@ -1,8 +1,9 @@
-# misty-albany-499
-Senior Capstone project 
+# Senior Capstone
 
-Michael Sollazzo
-
-Kyle Welch 
-
-Gaberiel Mesidor
+University at Albany 
+--
+####	Made by:
+####		* Michael Sollazzo
+####		* Kyle Welch
+####		* Gabriel Mesidor
+####	in 2020!
