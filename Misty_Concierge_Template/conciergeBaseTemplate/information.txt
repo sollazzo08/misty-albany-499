@@ -1,0 +1,8 @@
+https://us-central1-misty-team1-pywenp.cloudfunctions.net/getAuthToken
+
+^ trigger URL, you have to update it when you make a new token
+
+misty-team1-pywenp
+
+^ dialogflow project ID
+
