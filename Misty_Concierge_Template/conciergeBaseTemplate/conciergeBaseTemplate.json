@@ -1,0 +1,20 @@
+{
+
+  "Name": "conciergeBaseTemplate",
+  "UniqueId": "ed003cf3-e8c5-4f47-8212-a97c2a1c5022",
+  "Description": "My skill is amazing!",
+  "StartupRules": [
+    "Manual",
+    "Robot"
+  ],
+  "Language": "javascript",
+  "BroadcastMode": "debug",
+  "TimeoutInSeconds": 36000,
+  "CleanupOnCancel": false,
+  "WriteToLog": false,
+  "Parameters": {
+    "int": 10,
+    "double": 20.5,
+    "string": "twenty"
+  }
+}
