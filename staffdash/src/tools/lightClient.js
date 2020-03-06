@@ -13,7 +13,7 @@ implied.
 *    See the License for the specific language governing permissions and
 *    limitations under the License.
 */
-
+import $ from 'jquery';
 
 function LightClient(ip, ajaxTimeout) {
 	
@@ -76,3 +76,5 @@ function LightClient(ip, ajaxTimeout) {
 			});
 	}
 }
+
+export default LightClient;

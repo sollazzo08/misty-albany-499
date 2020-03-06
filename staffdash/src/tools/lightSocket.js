@@ -14,6 +14,7 @@ implied.
 *    limitations under the License.
 */
 
+import websocket from 'ws';
 
 function LightSocket(ip, OnOpenCallback = null, OnCloseCallback = null, OnErrorCallback = null) {
 
