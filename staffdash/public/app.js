@@ -1,3 +1,5 @@
+
+
 //Helper function 
 //Let misty pause to give her time to register and excute command
 function sleep(ms) {
@@ -19,7 +21,7 @@ const you = "Mike";
 let onList = false;
 
 let socket = new LightSocket(ip, openCallback);
-var lightClient = new LightClient(ip, 10000);
+
 
 //THis unsubscribes from any existing FaceRecognition ws connections
 
@@ -66,14 +68,13 @@ async function startFaceTraining() {
 };
 
 
-function _FaceRecognition(data, lightClient) {
+function _FaceRecognition(data) {
   try {
       if (data.message.personName !== "unknown person" && data.message.personName !== null && data.message.personName !== undefined) {
           // If the face is recognized, print a 
           // message to greet the person by name.
-      
           console.log(`A face was recognized. Hello there ${data.message.personName}!`);
-          lightClient.PostCommand("audio/play", "{\"AssetId\":\"Roar.wav\"}");
+       
          
 
 
