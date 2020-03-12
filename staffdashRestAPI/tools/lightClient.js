@@ -15,6 +15,7 @@ implied.
 */
 
 function LightClient(ip, ajaxTimeout) {
+	
 
 	var ipAddress = (ip === null ? "localhost" : ip);
 	var timeout = (ajaxTimeout === null ? 30000 : ajaxTimeout);
@@ -28,7 +29,7 @@ function LightClient(ip, ajaxTimeout) {
 
 	this.GetCommand = function (command, successCallback = null, version = null) {
 		var newUri = "http://" + ipAddress + "/api/" + (version ? version + "/" : "") + command;
-		$.ajax({
+		window.$.ajax({
 			type: "GET",
 			url: newUri,
 			dataType: "json",
@@ -74,3 +75,4 @@ function LightClient(ip, ajaxTimeout) {
 			});
 	}
 }
+
