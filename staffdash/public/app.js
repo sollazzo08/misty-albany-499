@@ -16,7 +16,7 @@ var ip ="192.168.100.105";
 
 
 //Turn this into a form in browser where uses can type and send their names
-const you = "Mike";
+const you = "Kyle";
 
 let onList = false;
 
@@ -75,7 +75,7 @@ function _FaceRecognition(data) {
           // message to greet the person by name.
           console.log(`A face was recognized. Hello there ${data.message.personName}!`);
        
-         
+          axios.post("http://192.168.100.105/api/tts/speak?text=Hello" + data.message.personName + "&flush=false");
 
 
           // Unsubscribe from the FaceRecognition WebSocket.
