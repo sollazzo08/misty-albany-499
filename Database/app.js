@@ -1,7 +1,6 @@
 // get dependencies
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
 
 const app = express();
 
@@ -23,7 +22,7 @@ require('./resident/resident.routes.js')(app);
 
 mongoose.Promise = global.Promise;
 
-// Connecting to the database
+// connecting to the database
 mongoose.connect(config.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -41,5 +40,5 @@ app.get('/', (res) => {
 
 // listen on port 3000
 app.listen(config.PORT, () => {
-    console.log("Server is listening on port 1234");
+    console.log("Server is listening on port " + config.PORT);
 });
