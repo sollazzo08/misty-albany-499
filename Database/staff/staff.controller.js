@@ -2,7 +2,7 @@ const Staff = require('./staff.model');
 
 //Create a new staff
 exports.create = (req, res) => {
-    let staff = new Resident({
+    let staff = new Staff({
         s_id: req.body.s_id,
         name: req.body.name,
         age: req.body.age,
@@ -23,7 +23,7 @@ exports.create = (req, res) => {
     });
 };
 
-//Retrieving all residents 
+//Retrieving all staff
 exports.findAll = (res) => {
     Staff.find()
     .then(staff => {
@@ -78,9 +78,9 @@ exports.update = (req, res) => {
     }, {
         new: true
        })
-    .then(resident => {
-        if(resident)
-            res.send(resident);
+    .then(staff => {
+        if(staff)
+            res.send(staff);
         
         return res.status(404).send({
             message: err.message
