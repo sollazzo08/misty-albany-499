@@ -1,6 +1,7 @@
 // get dependencies
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 
@@ -39,6 +40,6 @@ app.get('/', (req, res) => {
 });
 
 // listen on port 3000
-app.listen(config.serverport, () => {
-    console.log("Server is listening on port 3000");
+app.listen(1234, () => {
+    console.log("Server is listening on port 1234");
 });

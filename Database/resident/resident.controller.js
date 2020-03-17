@@ -2,7 +2,7 @@ const Resident = require('./resident.model');
 
 //Create a new resident
 exports.create = (req, res) => {
-    const resident = new Resident({
+    let resident = new Resident({
         r_id: req.body.r_id,
         name: req.body.name,
         age: req.body.age,

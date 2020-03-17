@@ -9,9 +9,10 @@ const ResidentSchema = mongoose.Schema({
     image: String,
     condition: String,
     response: String
-}, {
-    timestamps: true
-});
+    }, 
+    {
+        timestamps: true
+    });
 
 ResidentModel = mongoose.model('Resident', ResidentSchema);
 module.exports = ResidentModel;
