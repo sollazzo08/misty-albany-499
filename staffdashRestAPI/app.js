@@ -3,20 +3,20 @@ var ipAddress = document.getElementById('ip');
 var connect = document.getElementById('connect');
 var ip;
 var socket;
+var client;
 
 connect.onclick = function() {
   ip = validateIPAddress(ipAddress.value);
   if (!ip) {
-    printToScreen("IP address needed.");
+    alert
     return;
   }
   client = new LightClient(ip, 10000);
   client.GetCommand("device", function(data) {
-    alert('hello');
+    
     console.log(data);
   });
 };
-
 
 
 //Helper function 
