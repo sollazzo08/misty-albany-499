@@ -35,11 +35,11 @@ mongoose.connect(config.MONGO_URI, {
 });
 
 // default route
-app.get('/', (req, res) => {
+app.get('/', (res) => {
     res.json({"message": "Welcome to Misty's Res/Staff Database"});
 });
 
 // listen on port 3000
-app.listen(1234, () => {
+app.listen(config.PORT, () => {
     console.log("Server is listening on port 1234");
 });
