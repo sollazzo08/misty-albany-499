@@ -19,12 +19,14 @@ let onList = false;
 
 connect.onclick = function() {
 	ip = validateIPAddress(ipAddress.value);
-	console.log(ip);
+	console.log("IP entered: " + ip);
 	
   if (!ip) {
 		console.log("IP address needed");
     return;
 	}
+	console.log("trying to connnect to misty..");
+	
 	client = new LightClient(ip, 10000);
   client.GetCommand("device", function(data) {
     console.log("Connected to Misty");
@@ -100,7 +102,7 @@ function startFaceRecognition() {
 
 async function startFaceTraining() {
   console.log("starting face training");
-    axios.post("http://" + ip + "/api/faces/training/start", { FaceId: you });
+    axios.post("http://" + ip + "/api/faces/training/start", { FaceId: "Robin" });
     await sleep(20000);
   
     console.log("face training complete");
@@ -116,10 +118,13 @@ function _FaceRecognition(data, lightClient) {
           console.log(`A face was recognized. Hello there ${data.message.personName}!`);
 					//POST http://192.168.1.151/api/tts/speak
 					
+					var person = data.message.personName;
+					console.log(person);
+					
 				Promise.race([
-					fetch('http://'+ ip + '/api/tts/speak?text=Hello Mike&flush=false', {
+					fetch(`http://`+ ip + `/api/tts/speak?text=Hello ${person}&flush=false`, {
 						method: 'POST',
-						body: '{ "text":"Hello Mike","flush":false,"utteranceId":null }'
+						body: `{ "text":"Hello ${person}","flush":false,"utteranceId":null }`
 					}),
 					new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
 				])
@@ -161,3 +166,5 @@ function validateIPAddress(ip) {
 	}
 	return ip;
 };
+
+
