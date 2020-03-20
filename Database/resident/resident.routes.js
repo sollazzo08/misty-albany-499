@@ -1,6 +1,7 @@
 const resident = require('./resident.controller');
 
 module.exports = (route) => {
+    
     //Making a new resident
     route.post('/resident', resident.create);
 

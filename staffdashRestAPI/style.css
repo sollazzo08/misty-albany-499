@@ -92,3 +92,7 @@ textarea {
 #start {
   margin-left: 35%;
 }
+
+.resident-form {
+  border: 1px solid black;
+}
