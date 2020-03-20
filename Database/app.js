@@ -34,7 +34,7 @@ mongoose.connect(config.MONGO_URI, {
 });
 
 // default route
-app.get('/', (res) => {
+app.get('/', (req,res) => {
     res.json({"message": "Welcome to Misty's Res/Staff Database"});
 });
 

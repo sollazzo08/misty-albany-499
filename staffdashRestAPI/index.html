@@ -21,16 +21,46 @@
 		</div>
 		<div class="row container-fluid mt-5 mb-4">
 			<div class="col-md-6">
-				<form class="form-inline justify-content-center" action="/action_page.php">
+				<form class="form-inline justify-content-center" action="/">
 					<input class="form-control" type="text" placeholder="Staff">
 					<button class="btn btn-info" type="submit">Search</button>
 				</form>
 			</div>
 			<div class="col-md-6">
-				<form class="form-inline justify-content-center" action="/action_page.php">
+				<form class="form-inline justify-content-center" action="">
 					<input class="form-control" type="text" placeholder="Resident">
 					<button class="btn btn-info" type="submit">Search</button>
 				</form>
+				<!--Where we create a resident and store it in database-->
+				<!--res_id
+						name
+						age
+						DOB
+						location
+						img 
+						condition
+						responses-->
+					<br>
+				<form id="residentForm" class="resident-form" action="http://localhost:1234/resident">
+					Resident ID:
+					<input type="number" id="r_id" placeholder=""><br>
+					Name:
+					<input type="text" id="name" placeholder=""><br>
+					Age:
+					<input type="number" id="age" placeholder=""><br>
+					DOB:
+				  <input type="number" id="dob" placeholder=""><br>
+				  Location:
+					<input type="text" id="location" placeholder=""><br>
+					 <!--
+						Image:
+						<input type="text" id="res_id" placeholder=""><br> 
+						-->
+					Condition:	
+					<input type="text" id="condition" placeholder=""><br>
+					<input type="submit" value="Add Resident">
+				</form>
+			<br>		
 			</div>
 		</div>
 		<div class="row container-fluid pb-5">
@@ -67,6 +97,38 @@
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 			<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 		-->
+
+		<script>
+			$(document).ready(function(){
+		
+			$('#residentForm').submit(function(e){
+				e.preventDefault();
+
+				var r_id = $('#r_id').val();
+				var name = $('#name').val();
+				var age = $('#age').val();
+				var dob = $('#dob').val();
+				var location = $('#location').val();
+				var condition = $('#condition').val();
+				var url = $(this).attr('action');
+
+				$.post(url, 
+					{
+					 r_id:r_id,
+					 name: name,
+					 age: age,
+					 dob: dob,
+					 location:location,
+					// image: null,
+					 condition: condition,
+					// response: null
+					}).done(function(data){
+					console.log('Post Saved');
+					console.log(data);
+				});
+			});
+		});
+		</script>
 
 		<script src="app.js"></script>
 	</body>
