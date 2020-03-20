@@ -1,0 +1,18 @@
+  {
+	"Name": "index",
+	"UniqueId": "05d62e19-c8c6-4f3c-acf4-db303a8a68fc",
+	"Description": "My skill is amazing!",
+	"StartupRules": [
+	  "Manual",
+	  "Robot"
+	],
+	"Language": "javascript",
+	"BroadcastMode": "verbose",
+	"TimeoutInSeconds": 60000,
+	"CleanupOnCancel": true,
+	"WriteToLog": false,
+	"Parameters": {
+		"getAccessTokenUrl": "https://us-central1-mistyvoicecommand-otapmj.cloudfunctions.net/get-access-token ",
+		"projectID": "mistyvoicecommand-otapmj"
+	}
+  }
