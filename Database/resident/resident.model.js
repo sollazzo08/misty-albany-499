@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const ResidentSchema = mongoose.Schema({
     r_id: Number,
-    name: String,
+    name: String, //can use trim here
     age: Number,
     dob: Number,
     location: String,

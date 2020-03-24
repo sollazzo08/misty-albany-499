@@ -37,9 +37,9 @@ exports.findAll = (req, res) => {
 };
 
 //Retrieving a single resident
-exports.findOne = (req, res) => {
+exports.findById = (req, res) => {
     Resident.findById(req.params.r_id)
-    .then(resident => {
+    .then(resident => { //resident is a success block, single resident gets returned inside success block "resident"
         if(resident)
             res.send(resident);
 
