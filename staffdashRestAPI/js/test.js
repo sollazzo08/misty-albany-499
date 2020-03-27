@@ -54,9 +54,9 @@ testStopSkill.onclick = function() {
 */
 function stopTest() {
 	Promise.race([
-		fetch('http://'+ ip +'/api/skills/cancel?skill=05d62e19-c8c6-4f3c-acf4-db303a8a68fc', {
+		fetch('http://'+ ip +'/api/skills/cancel?skill=d83d7a01-f53e-47d8-a96e-0ba7b49d77ad', {
 			method: 'POST',
-			body: '{ "skill":"05d62e19-c8c6-4f3c-acf4-db303a8a68fc" }'
+			body: '{ "skill":"d83d7a01-f53e-47d8-a96e-0ba7b49d77ad" }'
 		}),
 		new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
 	])
@@ -71,9 +71,9 @@ function stopTest() {
 */
 function startSkill() {
   Promise.race([
-    fetch('http://'+ ip + '/api/skills/start?skill=05d62e19-c8c6-4f3c-acf4-db303a8a68fc', {
+    fetch('http://'+ ip + '/api/skills/start?skill=d83d7a01-f53e-47d8-a96e-0ba7b49d77ad', {
       method: 'POST',
-      body: '{ "skill":"05d62e19-c8c6-4f3c-acf4-db303a8a68fc","method":null }'
+      body: '{ "skill":"d83d7a01-f53e-47d8-a96e-0ba7b49d77ad","method":null }'
     }),
     new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
   ])
