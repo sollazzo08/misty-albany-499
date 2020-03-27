@@ -1,14 +1,15 @@
 const resident = require('./resident.controller');
 
 module.exports = (route) => {
+    
     //Making a new resident
     route.post('/resident', resident.create);
 
     //Retrieving all residents from db
-    //route.get('/resident', resident.findAll);
+    route.get('/resident', resident.findAll);
 
     //Retrieving a single resident from db
-    //route.get('/resident/:r_id', resident.findOne);
+    route.get('/resident/:r_id', resident.findById);
 
     //Update a resident with a r_id
     route.put('/resident/:r_id', resident.update);
