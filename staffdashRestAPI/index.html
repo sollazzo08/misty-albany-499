@@ -2,29 +2,27 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		
-		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js" ></script>
+		<!--lightclient and lightSocket are tools that make it easier to develop skills for Misty.-->
 		<script src="../staffdashRestAPI/tools/lightClient.js"></script>
 		<script src="../staffdashRestAPI/tools/lightSocket.js"></script>
-
 		<link rel="stylesheet" href="style.css">
-		
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-		<!--
-		-->
-	
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+		 integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">	
 		<title>Misty Interface</title>
 	</head>
 	<body>
+		<!--Navbar: where theconnection to Misty is made-->
 		<div class="container-fluid bg-dark text-light">
 			<h5>Enter Misty's IP</h5>
 			<input type="text" id="ip" placeholder="0.0.0.0" />
 			<button type="button" class="btn btn-info" id="connect">Connect</button>
 		</div>
+		<!--Container thats holds the staff and resident search bars -->
 		<div class="row container-fluid mt-5 mb-4">
 			<div class="col-md-6">
+				<!--Staff Search bar-->
 				<form class="form-inline justify-content-center" action="/">
 					<input class="form-control" type="text" placeholder="Staff">
 					<button class="btn btn-info" type="submit">Search</button>
@@ -33,13 +31,14 @@
 				</form>
 			</div>
 			<div class="col-md-6">
+				<!--Resident Search bar-->
 				<form class="form-inline justify-content-center" action="">
 					<input class="form-control" type="text" placeholder="Resident">
 					<button class="btn btn-info" type="submit">Search</button>
 					<div class="mr-2"></div>
 					<button class="btn btn-info" type="button" data-toggle="modal" data-target="#residentModal">Add Resident</button>
 				</form>
-				<!-- Resient Modal-->
+				<!--Resient Pop up Modal-->
 				<div class="modal" id="residentModal">
 					<div class="modal-dialog modal-dialog-centered modal-lg">
 						<div class="modal-content">
@@ -48,6 +47,9 @@
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 							</div>
 							<div class="modal-body">
+								<!--Make sure to change action address to ec2 instance url when deploying to AWS or else GET/POST requests will fail
+										~ 'http://ec2-3-17-26-49.us-east-2.compute.amazonaws.com:1234/resident'
+								 -->
 								<form id="residentForm" class="resident-form form-horizontal" action="http://localhost:1234/resident">
 									<div class="form-group">
 										Resident ID:
@@ -76,7 +78,7 @@
 						</div>
 					</div>
 				</div>
-				<!-- Staff Modal-->
+				<!-- Staff Pop up Modal-->
 				<div class="modal" id="staffModal">
 					<div class="modal-dialog modal-dialog-centered modal-lg">
 						<div class="modal-content">
@@ -85,6 +87,9 @@
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 							</div>
 							<div class="modal-body">
+									<!--Make sure to change action address to ec2 instance url when deploying to AWS or else GET/POST requests will fail
+										~ 'http://ec2-3-17-26-49.us-east-2.compute.amazonaws.com:1234/staff'
+								 -->
 								<form id="staffForm" class="resident-form form-horizontal" action="http://localhost:1234/staff">
 									<div class="form-group">
 										Staff ID:
@@ -117,7 +122,6 @@
 		</div>
 
 	<!--Photo and use case section-->	
-
 		<div class="row container-fluid pb-5">
 			<div class="col-md-4">
 				<div class="card mx-5">
@@ -136,7 +140,6 @@
 				<hr>
 						<div class="row-md-4 text-center mb-4">
 							<button class="btn btn-info" type="submit">Questionaire</button>
-							
 						</div>
 						<div class="row-md-4 text-center mb-4">
 							<button class="btn btn-info" type="submit">View Logs</button>
@@ -144,23 +147,26 @@
 						<div class="row-md-4 text-center mb-4">
 							<button class="btn btn-info" type="submit">Sleep Detection</button>
 						</div>
-						<hr>
+				<hr>
 			</div>
 		</div>
 		<div class="my-5 ml-5">
+			<!--Test Button-->
 			<button type="button" id="testStartSkill">TestStart</button>
 			<button type="button" id="testStopSkill">TestStop</button>
 		</div>
 		<!--
-			<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-		-->
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-			<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+			<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
+			 integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		 -->
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" 
+			 integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+			<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" 
+			 integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 		
-
 		<script>
+			/*Get the user input and sends a post request to the database. Creates a resident*/
 			$(document).ready(function(){
-		
 			$('#residentForm').submit(function(e){
 				e.preventDefault();
 
@@ -179,16 +185,15 @@
 					 age: age,
 					 dob: dob,
 					 location:location,
-					// image: null,
+				 //image: null,
 					 condition: condition,
-					// response: null
+				 //response: null
 					}).done(function(data){
 					console.log('Post Saved');
 					console.log(data);
 				});
 			});
 		});
-
 /*
 		$.ajax({
 				method:'GET',
@@ -200,10 +205,8 @@
 					$('#result').append('<h3>'+post.title+'</h3><p>'+post.body+'</p>');
 				});
 			});
-
 */
 		</script>
-
-		<script src="app.js"></script>
+		<script src="../staffdashRestAPI/js/test.js"></script>
 	</body>
 </html>

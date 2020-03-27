@@ -4,14 +4,11 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-
 var ipAddress = document.getElementById('ip');
 var connect = document.getElementById('connect');
 var testStartSkill = document.getElementById('testStartSkill');
 var testStopSkill= document.getElementById('testStopSkill');
 var ip;
-//This Ip never gets recorded 
-
 
 const you = "Mike";
 let onList = false;
@@ -144,13 +141,6 @@ function _FaceRecognition(data, lightClient) {
       console.log("Error: " + e);
   }
 }
-
-
-
-
-
-
-
 
 function validateIPAddress(ip) {
 	var ipNumbers = ip.split(".");
