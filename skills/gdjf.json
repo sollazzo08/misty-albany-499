@@ -1,0 +1,19 @@
+{
+    "Name": "gdjf",
+    "UniqueId": "1a80d87d-0f25-49d1-85de-978181e2ad07",
+    "Description": "My skill is amazing!",
+    "StartupRules": [
+      "Manual",
+      "Robot"
+    ],
+    "Language": "javascript",
+    "BroadcastMode": "verbose",
+    "TimeoutInSeconds": 600,
+    "CleanupOnCancel": true,
+    "WriteToLog": false,
+    "Parameters": {
+      "int": 10,
+      "double": 20.5,
+      "string": "twenty"
+    }
+  }
