@@ -17,3 +17,8 @@
 ### Sponser
  Steve, Living Resources
 
+### Live Server
+
+Here is a live version of the current state of our project
+
+[Misty Staff/Resident Interface](http://ec2-3-17-26-49.us-east-2.compute.amazonaws.com/misty/)
