@@ -1,16 +1,23 @@
-misty.SetDefaultVolume(30);
-
 // Kicks everything off!
 getAccessToken();
 
-function initiateTokenRefresh() {
+function getRandomInt(min, max){
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function initiateTokenRefresh() 
+{
+    
+    misty.Debug("Refreshing token...");
+    misty.Pause(2000);
     misty.Set("googleAuthToken", "not updated yet", false);
     _getAuthToken();
     misty.RegisterTimerEvent("getAuthToken", 60000 * 15, true);
 }
 initiateTokenRefresh();
 
-function _getAuthToken() {
+function _getAuthToken() 
+{
     misty.SendExternalRequest("POST", misty.Get("cloudFunctionAuthTokenURL"), null, null, null, false, false, null, "application/json", "_UpdateAuthToken");
 }
 
@@ -23,14 +30,14 @@ function _UpdateAuthToken(data)
 function creds(){
     misty.Set("cloudFunctionAuthTokenURL", "https://us-central1-mistyvoicecommand-otapmj.cloudfunctions.net/get-access-token", false);
     misty.Set("GoogleCloudProjectID", "mistyvoicecommand-otapmj", false);
-    misty.Set("langCodeForTTS", "en-AU", false);
+    misty.Set("langCodeForTTS", "en-US", false);
+    misty.Set("genderCodeForTTS", "FEMALE", false);
 }
 creds();
 
-
 // Creates a unique session ID for opening a session with our Dialogflow
 // agent.
-function getSessionId() {
+function getSessionId(){
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
 
@@ -39,41 +46,56 @@ function getAccessToken() {
     misty.SendExternalRequest("POST",  _params.getAccessTokenUrl, null, null, null, false, false, null, "application/json", "SetAccessToken");
 }
 
-function startListeningToUser() {
+function SetAccessToken(data) {
+    let response = JSON.parse(data.Result.ResponseObject.Data)
+    misty.Set("googleAccessToken", response.accessToken);
+
+    startToListen();
+}
+
+function startToListen() {
     misty.StartKeyPhraseRecognition(true);
 
-    misty.RegisterEvent("VoiceRecord", "VoiceRecord", 10, false);
+    misty.RegisterEvent("VoiceRecord", "VoiceRecord", 1000, false);
     misty.Debug("Misty is listening, say 'Hey, Misty' to start!");
     misty.PlayAudio("s_Joy3.wav");
 
     animateDefault();
 }
 
-// Triggers when response data from getAccessToken call is ready.
-// Stores token for use later with the DialogFlow API.
-function SetAccessToken(data) {
-
-    let response = JSON.parse(data.Result.ResponseObject.Data)
-    misty.Set("googleAccessToken", response.accessToken);
-    
-    startListeningToUser();
-}
-
-// Callback for handling VoiceRecord event data. Prints a debug
-// message and gets passes the captured speech file into the
-// ProcessAudioFile() callback function. 
-function _VoiceRecord() {
-    misty.Debug("Speech captured.")
+function _VoiceRecord(){
+    misty.Debug("Speech captured.");
     misty.GetAudioFile("capture_HeyMisty.wav", "ProcessAudioFile");
+    ProcessAudioFile("capture_HeyMisty.wav");
 }
 
-// Sends speech recording to DialogFlow. Dialogflow uses 
-// speech-to-text to match the recording with an "intent" we define in
-// the DialogFlow project, then sends a response back with intent data.
-// We use this response data to change Misty's LED.
-function ProcessAudioFile(data) {
+/**function keepListening() {
+    misty.CaptureSpeech(false, true)
 
-    // Set variable with base64 data for capture_HeyMisty audio file
+    misty.AddReturnProperty("SpeechCaptured", "Filename");
+    misty.AddReturnProperty("SpeechCaptured", "Success");
+    misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
+
+    animateDefault();
+}**/
+
+function _SpeechCaptured(data){
+    misty.Debug("Your speech has been captured!");
+    misty.Pause(5000);
+    let filename = data.AdditionalResults[0];
+    let success = data.AdditionalResults[1];
+    misty.Debug("The file " + filename + "was a " + success);
+    misty.Pause(5000);
+    if(success == true){
+        misty.PlayAudio(filename);
+    }
+    misty.Debug("Time to process " + filename);
+    misty.Pause(3000);
+    misty.GetAudioFile(filename, "ProcessAudioFile");
+    ProcessAudioFile(filename);
+}
+
+function ProcessAudioFile(data){
     let base64 = data.Result.Base64;
 
     // Set up params for request to DialogFlow
@@ -96,9 +118,7 @@ function ProcessAudioFile(data) {
     misty.SendExternalRequest("POST", url, authorizationType, accessToken, dialogFlowParams, false, false, null, "application/json", "ProcessDialogFlowResponse");
 }
 
-// Handles response from Dialogflow agent
-function ProcessDialogFlowResponse(data) {
-    
+function ProcessDialogFlowResponse(data){
     // Gets the intent and parameters from the response
     let response = JSON.parse(data.Result.ResponseObject.Data)
     let intent = response.queryResult.intent.displayName;
@@ -106,84 +126,165 @@ function ProcessDialogFlowResponse(data) {
 
     // Prints some debug messages with contents of the response
     misty.Debug("Intent: " + intent);
+    misty.Pause(2000);
     misty.Debug("Input text: " + response.queryResult.queryText);
 
-    // Handles ChangeLED intents. If the color is red, green, or blue,
-    // Misty plays a happy sound and changes her color. 
-    if (intent == "ChangeLED") {
-        switch(parameters.color) {
-            case "red":
-                misty.ChangeLED(255, 0, 0);
-                animateCompliance();
-                break;
-            case "blue":
-                misty.ChangeLED(0, 0, 255);
-                animateCompliance();
-                break;
-            case "green":
-                misty.ChangeLED(0, 255, 0);
-                animateCompliance();
-                break;
-            case "yellow":
-                misty.ChangeLED(255,255,51);
-                animateCompliance();
-                break;
-            case "orange":
-                misty.ChangeLED(255,128,0);
-                animateCompliance();
-                break;
-            case "pink":
-                misty.ChangeLED(255,51,187);
-                animateComplaince();
-                break;
-            case "white":
-                misty.ChangeLED(255, 255, 255);
-                animateComplaince();
-                break;
-            default:
-                animateConfusion();
-                misty.Speak("Sorrt, I didn't catch that. Say it again?");
-                misty.Debug("Sorry, I didn't catch that. Say it again?");
-                misty.Pause(2000);
-                startListeningToUser();
-                return;
-        }
-    }
-    else if(intent == "Name"){
-        misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
-        speakTheText();
-    }
-    // If Dialogflow couldn't match the recorded utterance to an
-    // intent, Misty plays a confused sound and starts listening again.
-    if (intent == "Default Welcome Intent") {
-        misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
-        speakTheText();
-    }
-    
-    else {
-        misty.PlayAudio("s_DisorientedConfused3.wav");
-        misty.Debug("Sorry, I didn't catch that. Say it again?");
+    /**if(intent == 'Questionaire'){
+        misty.Debug("Ready to start the questionaire.");
         misty.Pause(2000);
-        startListeningToUser();
-        return;
+        misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+        speakTheText();
+        misty.Pause(2000);
+        keepListening();
     }
 
-    // Waits five seconds, then starts listening again.
-    misty.Pause(5000);
-    animateDefault();
-    startListeningToUser();
-}
+    else if(intent == 'Questionaire - good'){
+        misty.Debug("Good! Let's see how well you have been sleeping today.");
+        misty.Pause(2000);
+        misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+        speakTheText();
+        misty.Pause(2000);
+        keepListening();
+    }
 
-function animateConfusion() {
-    misty.MoveHeadDegrees(-10, 30, 0, 100);
-    misty.PlayAudio("s_DisorientedConfused3.wav");
-    misty.DisplayImage("e_ApprehensionConcerned.jpg");
-    misty.MoveArms(-25, 90, 100, 100);
-}
+    else if(intent == 'Questionaire - bad'){
+        misty.Debug("That is too bad! Let's see if we can get a professional to help you.");
+        misty.Pause(2000);
+        misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+        speakTheText();
+        misty.Pause(2000);
+        keepListening();
+    }
 
-function animateDefault() {
-    misty.MoveHeadDegrees(0, 0, 0, 100);
-    misty.MoveArms(90, 90, 100, 100);
+    else if (intent == 'Questionaire - good - good'){
+        misty.Debug("All Done, thank you!");
+        misty.Pause(2000);
+        misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+        speakTheText();
+        misty.Pause(2000);
+        stopSkill();
+    }**/
+
+    switch(intent){
+        case 'Questionaire':
+            misty.Debug("Ready to start the questionaire.");
+            misty.Pause(2000);
+            misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+            speakTheText();
+            misty.Pause(2000);
+            animateInterest();
+            misty.Pause(1000);
+            keepListening();
+            break;
+        case 'Questionaire - good':
+            misty.Debug("Good! Let's see how well you have been sleeping today.");
+            misty.Pause(2000);
+            misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+            speakTheText();
+            misty.Pause(2000);
+            keepListening();
+            break;
+        case 'Questionaire - bad':
+            misty.Debug("That is too bad! Let's see if we can get a professional to help you.");
+            misty.Pause(2000);
+            misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+            speakTheText();
+            misty.Pause(2000);
+            keepListening();
+        case 'Questionaire - good - good':
+            misty.Debug("Good! Let's see how well you have been sleeping today.");
+            misty.Pause(2000);
+            misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+            speakTheText();
+            misty.Pause(2000);
+            stopSkill();
+            break;
+        case 'ChangeLED':
+            let color = parameters.color;
+            misty.Debug("Color: " + color);
+            misty.Pause(2000);
+            if(color == "Random"){
+                misty.ChangeLED(getRandomInt(0, 255), getRandomInt(0, 255), getRandomInt(0, 255));
+                misty.Pause(1000);
+                misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+                speakTheText();
+                misty.Pause(7000);
+                misty.Speak("Go");
+                misty.CaptureSpeech(false, true)
+                misty.AddReturnProperty("SpeechCaptured", "Filename");
+                misty.AddReturnProperty("SpeechCaptured", "Success");
+                misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
+            }
+            else if(color == "Red"){
+                misty.ChangeLED(255, 0, 0);
+                misty.Pause(1000);
+                misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+                speakTheText();
+                misty.Pause(7000);
+                misty.Speak("Go");
+                misty.CaptureSpeech(false, true)
+                misty.AddReturnProperty("SpeechCaptured", "Filename");
+                misty.AddReturnProperty("SpeechCaptured", "Success");
+                misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
+                
+            }
+            else if(color == "Blue"){
+                misty.ChangeLED(0, 0, 255);
+                misty.Pause(1000);
+                misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+                speakTheText();
+                misty.Pause(7000);
+                misty.Speak("Go");
+                misty.CaptureSpeech(false, true)
+                misty.AddReturnProperty("SpeechCaptured", "Filename");
+                misty.AddReturnProperty("SpeechCaptured", "Success");
+                misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
+            }
+            else if(color == "Green"){
+                misty.ChangeLED(0, 255, 0);
+                misty.Pause(1000);
+                misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+                speakTheText();
+                misty.Pause(7000);
+                misty.Speak("Go");
+                misty.CaptureSpeech(false, true)
+                misty.AddReturnProperty("SpeechCaptured", "Filename");
+                misty.AddReturnProperty("SpeechCaptured", "Success");
+                misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
+            }
+            /**misty.CaptureSpeech(false, true)
+            misty.AddReturnProperty("SpeechCaptured", "Filename");
+            misty.AddReturnProperty("SpeechCaptured", "Success");
+            misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);**/
+            misty.Speak("Go");
+            misty.CaptureSpeech(false, true)
+            misty.AddReturnProperty("SpeechCaptured", "Filename");
+            misty.AddReturnProperty("SpeechCaptured", "Success");
+            misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
+            break;
+        case 'ChangeLED - yes':
+            animateCompliance();
+            misty.Pause(2000);
+            misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+            speakTheText();
+            misty.Pause(5000);
+            stopSkill();
+            break;
+        case 'Flashlight':
+            misty.SetFlashlight(true);
+            misty.Debug('Turning on flashlight');
+            misty.Pause(2000);
+            misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+            speakTheText();
+            misty.Pause(3000);
+            keepListening();
+        default:
+            misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+            speakTheText();
+            misty.Pause(5000);
+            keepListening();
+            break;    
+    }
 }
 
 function animateCompliance() {
@@ -193,6 +294,12 @@ function animateCompliance() {
     misty.MoveArms(0, -25, 100, 100);
 }
 
+function animateInterest() {
+    misty.MoveHeadDegrees(30, -20, 80);
+    misty.DisplayImage('e_SystemGearPrompt.jpg');
+    misty.MoveArms(-25, 25, 100, 100);
+}
+
 function speakTheText() {
     var arguments = JSON.stringify({
         'input': {
@@ -200,14 +307,14 @@ function speakTheText() {
         },
         'voice': {
             'languageCode': misty.Get("langCodeForTTS"),
-            'ssmlGender': "MALE"
+            'ssmlGender': misty.Get("genderCodeForTTS")
         },
         'audioConfig': {
             'audioEncoding': "LINEAR16",
             "effectsProfileId": [
                 "handset-class-device"
             ],
-            "pitch": 0,
+            "pitch": 5,
             "speakingRate": 0.91
         }
     });
@@ -227,3 +334,12 @@ function _Base64In(data) {
      misty.SaveAudio("tts.wav", JSON.parse(data.Result.ResponseObject.Data).audioContent, true, true);
 
 }
+
+function stopSkill(){
+    misty.Speak("Ending Skill. Goodbye.");
+    misty.Debug("Skill is ending...");
+    misty.Pause(3000);
+    misty.CancelSkill('questionaire');
+}
+
+
