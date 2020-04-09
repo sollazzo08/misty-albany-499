@@ -126,10 +126,10 @@
 			<div class="col-md-4">
 				<div class="card mx-5">
 					<img class="card-img-top img-responsive" src="./public/placeholder-profile.jpg" alt="image">
-					<div class="card-body">
-						<h4 class="card-title">Frank</h4>
+					<div id="result" class="card-body">
+						<h3 class="card-title"></h3>
 						<hr>
-						<p class="card-text">Director of Facility Management</p>
+						<p class="card-text"></p>
 					  <!--<a href="#" class="btn btn-info">See Profile</a> -->	
 					</div>
 				</div>
@@ -194,18 +194,9 @@
 				});
 			});
 		});
-/*
-		$.ajax({
-				method:'GET',
-				url: 'http://localhost:1234/resident/1',
-				dataType: 'json'
-			}).done(function(data){
-				console.log(data);
-				$.map(data, function(post, i){
-					$('#result').append('<h3>'+post.title+'</h3><p>'+post.body+'</p>');
-				});
-			});
-*/
+
+
+
 		</script>
 		<script src="../staffdashRestAPI/js/test.js"></script>
 	</body>

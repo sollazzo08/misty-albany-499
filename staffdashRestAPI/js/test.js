@@ -35,7 +35,7 @@ testStartSkill.onclick = function() {
     return;
 	}
 	//console.log(ip);
-	startTest();
+	//startTest();
 	socket.Connect();
 };
 
@@ -45,8 +45,31 @@ testStopSkill.onclick = function() {
 
  async function startTest() {
 	 //Sleep for 5 seconds to give Misty time ~ time may need to be adjusted
-    await sleep(5000);
-          startSkill();
+		await sleep(5000);
+		
+		$.ajax({
+			method:'GET',
+			url: 'http://localhost:1234/resident/5e8f54a6e43a74280796b1b3',
+			dataType: 'json'
+		}).done(function(data){
+			console.log(data);
+			//$.map(data, function(post, i){
+				$('#result').append('<h3>'+ data.name +'</h3> <p>'+'Age: ' + data.age +'</p>'
+				 +'<p>'+'Location: ' + data.location +'</p>'
+				+ '<p>'+'Condition: ' + data.condition +'</p>'
+);
+		//	}); 
+		});
+		
+        Promise.race([
+					fetch('http://'+ ip + '/api/skills/start?skill=d83d7a01-f53e-47d8-a96e-0ba7b49d77ad', {
+						method: 'POST',
+						body: '{ "skill":"d83d7a01-f53e-47d8-a96e-0ba7b49d77ad","method":null }'
+					}),
+					new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
+				])
+				.then(response => response.json())
+				.then(jsonData => console.log(jsonData))
 	}
 
 /* Misty skill stop endpoint 
@@ -70,17 +93,8 @@ function stopTest() {
 	 Make sure to have correct skill id string
 */
 function startSkill() {
-  Promise.race([
-    fetch('http://'+ ip + '/api/skills/start?skill=d83d7a01-f53e-47d8-a96e-0ba7b49d77ad', {
-      method: 'POST',
-      body: '{ "skill":"d83d7a01-f53e-47d8-a96e-0ba7b49d77ad","method":null }'
-    }),
-    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
-  ])
-  .then(response => response.json())
-	.then(jsonData => console.log(jsonData))
-	.then(console.log("Skill is starting...")
-	)
+
+	//.then(console.log("Skill is starting..."))
     
 };
 
