@@ -46,15 +46,6 @@ function SetAccessToken(data) {
     startToListen();
 }
 
-//misty.AddReturnProperty("SpeechCaptured", "Filename");
-//misty.AddReturnProperty("SpeechCaptured", "Success");
-//misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
-
-// Registers listener for BumpSensor events
-//misty.AddReturnProperty("Bumped", "sensorName");
-//misty.AddReturnProperty("Bumped", "isContacted");
-//misty.RegisterEvent("Bumped", "BumpSensor", 100, true);
-
 function startToListen() {
     misty.StartKeyPhraseRecognition(true);
 

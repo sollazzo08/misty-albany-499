@@ -1,6 +1,6 @@
 {
-    "Name": "captureSpeech",
-    "UniqueId": "d83d7a01-f53e-47d8-a96e-0ba7b49d77ad",
+    "Name": "faceReg",
+    "UniqueId": "febce520-c85d-4a52-bf0a-48de02190f79",
     "Description": "My skill is amazing!",
     "StartupRules": [
       "Manual",
@@ -12,7 +12,8 @@
     "CleanupOnCancel": true,
     "WriteToLog": false,
     "Parameters": {
-        "getAccessTokenUrl": "https://us-central1-mistyvoicecommand-otapmj.cloudfunctions.net/get-access-token ",
-		    "projectID": "mistyvoicecommand-otapmj"
+      "int": 10,
+      "double": 20.5,
+      "string": "twenty"
     }
   }
