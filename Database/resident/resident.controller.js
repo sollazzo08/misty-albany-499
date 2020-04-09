@@ -27,7 +27,7 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
     Resident.find()
     .then(resident => {
-        res.send(residents);
+        res.send(resident);
     })
     .catch(err => {
         res.status(500).send({
@@ -36,12 +36,19 @@ exports.findAll = (req, res) => {
     });
 };
 
+ exports.findByName = (req,res) => {
+     Resident.find().byName('Mike').exec(function(err, resident) {
+        res.send(resident);
+  });
+ };
 //Retrieving a single resident
 exports.findById = (req, res) => {
-    Resident.findById(req.params.r_id)
+    Resident.findById(req.params.id)
     .then(resident => { //resident is a success block, single resident gets returned inside success block "resident"
         if(resident)
             res.send(resident);
+            console.log("Resident retreived");
+            
 
         return res.status(404).send({
             message: err.message
