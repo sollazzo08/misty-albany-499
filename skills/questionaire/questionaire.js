@@ -208,7 +208,7 @@ function ProcessDialogFlowResponse(data) {
         misty.Pause(2000);
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
         speakTheText();
-        misty.Pause(5000);
+        misty.Pause(3000);
         processResponse();
     }
     else if(intent == "Questionaire - good - good"){
@@ -220,19 +220,49 @@ function ProcessDialogFlowResponse(data) {
         misty.Pause(4000);
         misty.CancelSkill("baca7c34-3133-4b27-a5f4-dc1aa4855b3b");
     }
+
+    else if(intent == "Questionaire - bad"){
+        misty.Debug("Feeling: " + parameters.Feeling);
+        misty.Debug("I'm sorry to hear that!");
+        misty.Pause(2000);
+        misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+        speakTheText();
+        misty.Pause(3000);
+        processResponse();
+    }
+
+    else if(intent == "Questionaire - bad - yes"){
+        misty.Debug("Feeling: " + parameters.Feeling);
+        misty.Debug("I've notified a staff member to assist you!");
+        misty.Pause(2000);
+        misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+        speakTheText();
+        misty.Pause(3000);
+        processResponse();
+    }
+
+    else if(intent == "Questionaire - bad - no"){
+        misty.Debug("Feeling: " + parameters.Feeling);
+        misty.Debug("Okay. Are you sure?");
+        misty.Pause(2000);
+        misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
+        speakTheText();
+        misty.Pause(3000);
+        processResponse();
+    }
     else if(intent == "Flashlight"){
         misty.Debug("Turning flashlight on.");
         misty.Pause(1000);
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
         speakTheText();
         misty.SetFlashlight(true);
-        misty.Pause(4000);
+        misty.Pause(3000);
         processResponse();
     }
     else {
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
         speakTheText();
-        misty.Pause(5000);
+        misty.Pause(3000);
         processResponse();
     }
 }
