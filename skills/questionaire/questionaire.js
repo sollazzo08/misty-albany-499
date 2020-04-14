@@ -188,7 +188,7 @@ function ProcessDialogFlowResponse(data) {
         misty.Pause(2000);
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
         speakTheText();
-        misty.Pause(5000);
+        misty.Pause(7000);
         //startToListen();
         processResponse();
     }
@@ -227,22 +227,24 @@ function ProcessDialogFlowResponse(data) {
         animateCompliance();
        //misty.Debug("Feeling: " + parameters.Feeling);
         misty.Debug("I've notified a staff member to assist you!");
-        misty.Pause(2000);
+        misty.Pause(4000);
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
         speakTheText();
-        misty.Pause(3000);
+        misty.Pause(5000);
         processResponse();
+        misty.CancelSkill("baca7c34-3133-4b27-a5f4-dc1aa4855b3b");
     }
 
     else if(intent == "Questionaire - bad - no"){
         //misty.Debug("Feeling: " + parameters.Feeling);
         animateStandard();
         misty.Debug("Okay. Are you sure?");
-        misty.Pause(2000);
+        misty.Pause(4000);
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
         speakTheText();
-        misty.Pause(3000);
+        misty.Pause(5000);
         processResponse();
+        misty.CancelSkill("baca7c34-3133-4b27-a5f4-dc1aa4855b3b");
     }
     else if(intent == "Flashlight"){
         misty.Debug("Turning flashlight on.");
