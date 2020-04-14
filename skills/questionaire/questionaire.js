@@ -62,17 +62,7 @@ function startToListen() {
     misty.StartKeyPhraseRecognition(true, true, 15000); 
 }
 
-//Helper function for Misty to process a response in the conversation
-function processResponse(){
-    //Misty starts listening, overwrites previous recording audio file
-    //Does NOT require Misty's key phrase to start speaking
-    misty.Debug("Misty is listening for a response!")
-    misty.CaptureSpeech(false, true);
-    misty.Pause(2000);
-    misty.AddReturnProperty("SpeechCaptured", "Filename");
-    misty.AddReturnProperty("SpeechCaptured", "Success");
-    misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
-}
+
 
 function _VoiceRecord(){
     misty.Debug("Speech captured.")
@@ -198,12 +188,13 @@ function ProcessDialogFlowResponse(data) {
         misty.Pause(2000);
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
         speakTheText();
-        misty.Pause(3000);
+        misty.Pause(5000);
         //startToListen();
         processResponse();
     }
     else if(intent == "Questionaire - good"){
-        misty.Debug("Feeling: " + parameters.Feeling);
+        animateCompliance();
+        //misty.Debug("Feeling: " + parameters.Feeling);
         misty.Debug("That is great!");
         misty.Pause(2000);
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
@@ -222,17 +213,19 @@ function ProcessDialogFlowResponse(data) {
     }
 
     else if(intent == "Questionaire - bad"){
-        misty.Debug("Feeling: " + parameters.Feeling);
+        animateSadness();
+        //misty.Debug("Feeling: " + parameters.Feeling);
         misty.Debug("I'm sorry to hear that!");
-        misty.Pause(2000);
+        misty.Pause(4000);
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
         speakTheText();
-        misty.Pause(3000);
+        misty.Pause(7000);
         processResponse();
     }
 
     else if(intent == "Questionaire - bad - yes"){
-        misty.Debug("Feeling: " + parameters.Feeling);
+        animateCompliance();
+       //misty.Debug("Feeling: " + parameters.Feeling);
         misty.Debug("I've notified a staff member to assist you!");
         misty.Pause(2000);
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
@@ -242,7 +235,8 @@ function ProcessDialogFlowResponse(data) {
     }
 
     else if(intent == "Questionaire - bad - no"){
-        misty.Debug("Feeling: " + parameters.Feeling);
+        //misty.Debug("Feeling: " + parameters.Feeling);
+        animateStandard();
         misty.Debug("Okay. Are you sure?");
         misty.Pause(2000);
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
@@ -274,10 +268,23 @@ function animateCompliance() {
     misty.MoveArms(0, -25, 100, 100);
 }
 
+function animateSadness() {
+    misty.MoveHeadDegrees(25, 0, 0, 100);
+    misty.PlayAudio("e_Sadness.wav");
+    misty.DisplayImage("e_Sadness.jpg");
+    misty.MoveArms(0, 0, 100, 100);
+}
+
 function animateInterest() {
-    misty.MoveHeadDegrees(30, -20, 80);
-    misty.DisplayImage('e_SystemGearPrompt.jpg');
+    misty.MoveHeadDegrees(-15, 0, 0, 100);
+    misty.DisplayImage("e_Confusion.jpg");
     misty.MoveArms(-25, 25, 100, 100);
+}
+
+function animateStandard() {
+    misty.MoveHeadDegrees(-10, 0, 0, 100);
+    misty.DisplayImage("e_Content.jpg");
+    misty.MoveArms(0, 0, 100, 100);
 }
 
 function speakTheText() {
@@ -312,4 +319,16 @@ function _Base64In(data) {
 
     // Saves and plays the Base64-encoded audio data 
     misty.SaveAudio("tts.wav", JSON.parse(data.Result.ResponseObject.Data).audioContent, true, true);
+}
+
+//Helper function for Misty to process a response in the conversation
+function processResponse() {
+    //Misty starts listening, overwrites previous recording audio file
+    //Does NOT require Misty's key phrase to start speaking
+    misty.Debug("Misty is listening for a response!")
+    misty.CaptureSpeech(false, true);
+    misty.Pause(2000);
+    misty.AddReturnProperty("SpeechCaptured", "Filename");
+    misty.AddReturnProperty("SpeechCaptured", "Success");
+    misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
 }
