@@ -1,8 +1,3 @@
-//Let misty pause to give her time to register and excute command
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 var ipAddress = document.getElementById('ip');
 var connect = document.getElementById('connect');
 var testStartSkill = document.getElementById('testStartSkill');
@@ -13,117 +8,117 @@ var facialRecognition = document.getElementById('facialRecognition');
 var getResidentBtn = document.getElementById('getResidentBtn');
 var ip;
 
+//Let misty pause to give her time to register and excute command
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
 
+/* Connects to Misty on click */
+connect.onclick = function () {
+	var message = {
+		success: "Successful Connection!",
+		failure: "Connection Failed!"
+	};
 
-
-/*
-Connects to Misty on click
-*/
-connect.onclick = function() {
 	ip = validateIPAddress(ipAddress.value);
-	console.log("IP entered: " + ip);
-  	if (!ip) {
+		if (!ip) {
 			console.log("IP address needed");
-    return;
-	}
+			document.getElementById("failure").innerHTML = message.failure;
+			return;
+		}
 	console.log("Trying to connnect to misty..");
 	client = new LightClient(ip, 10000);
-  	client.GetCommand("device", function(data) {
-  	console.log("Connected to Misty");
-	console.log(data);	
-  });
+	client.GetCommand("device", function (data) {
+		console.log("Connected to Misty");
+		document.getElementById("success").innerHTML = message.success;
+		console.log(data);
+	});
 };
 
+/* When a resident name is submitted, misty checks to see if that resident
+	 is in her file system. If the resident is in file system then get info 
+	 and display on screen. */
+getResidentBtn.onclick = function () {
+	// create new socket with ip and callback
+	socket = new LightSocket(ip, mistyGetResident);
+	ip = validateIPAddress(ipAddress.value);
+		if (!ip) {
+			console.log("You must connect to a robot first.");
+			return;
+		}
+	socket.Connect();
+}
 
-/*
-Misty gets resident informaiton upon facial regcognition 
-*/
-getResidentBtn.onclick = function(){
-	
-	socket = new LightSocket(ip,mistyGetResident);
-	ip = validateIPAddress(ipAddress.value);	
+/* Starts questionaire use case */
+questionaire.onclick = function () {
+	socket = new LightSocket(ip, startTest);
+	ip = validateIPAddress(ipAddress.value);
 	if (!ip) {
 		console.log("You must connect to a robot first.");
-	return;
-}
-	//	mistyGetResident(residentName);
-		socket.Connect();
-}
-		
-
-testStartSkill.onclick = function() {
-	socket = new LightSocket(ip, startTest);
-	ip = validateIPAddress(ipAddress.value);	
-  	if (!ip) {
-    	console.log("You must connect to a robot first.");
-    return;
+		return;
 	}
-	//console.log(ip);
-	//startTest();
+ 	goToQuestionaire();
 	socket.Connect();
 };
 
-/* Clicking this would start the questionaire skill. */
-questionaire.onclick = function() {
+/* Starts the facial recognition use case */
+facialRecognition.onclick = function () {
 	socket = new LightSocket(ip, startTest);
-	ip = validateIPAddress(ipAddress.value);	
-  	if (!ip) {
-    	console.log("You must connect to a robot first.");
-    return;
+	ip = validateIPAddress(ipAddress.value);
+		if (!ip) {
+			console.log("You must connect to a robot first.");
+			return;
 		}
-	goToQuestionaire();
-	socket.Connect();
-};
-
-
-/* Clicking this would start the facial recognition skill. */
-facialRecognition.onclick = function() {
-	socket = new LightSocket(ip, startTest);
-	ip = validateIPAddress(ipAddress.value);	
-  	if (!ip) {
-    	console.log("You must connect to a robot first.");
-    return;
-	}
-	
 	goToFacialRecognition();
 	socket.Connect();
 }
 
-testStopSkill.onclick = function() {
-  stopTest();
+/* Test button */
+testStartSkill.onclick = function () {
+	socket = new LightSocket(ip, startTest);
+	ip = validateIPAddress(ipAddress.value);
+		if (!ip) {
+			console.log("You must connect to a robot first.");
+			return;
+		}
+	socket.Connect();
 };
 
- async function startTest() {
-	 //Sleep for 5 seconds to give Misty time ~ time may need to be adjusted
-		await sleep(5000);
+/* Test stop button */
+testStopSkill.onclick = function () {
+	stopTest();
+};
 
- 	
-        Promise.race([
-					fetch('http://'+ ip + '/api/skills/start?skill=d83d7a01-f53e-47d8-a96e-0ba7b49d77ad', {
-						method: 'POST',
-						body: '{ "skill":"d83d7a01-f53e-47d8-a96e-0ba7b49d77ad","method":null }'
-					}),
-					new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
-				])
-				.then(response => response.json())
-				.then(jsonData => console.log(jsonData))
-	}
+
+async function startTest() {
+	//Sleep for 5 seconds to give Misty time ~ time may need to be adjusted
+	await sleep(5000);
+
+	Promise.race([
+			fetch('http://' + ip + '/api/skills/start?skill=d83d7a01-f53e-47d8-a96e-0ba7b49d77ad', {
+				method: 'POST',
+				body: '{ "skill":"d83d7a01-f53e-47d8-a96e-0ba7b49d77ad","method":null }'
+			}),
+			new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
+		])
+		.then(response => response.json())
+		.then(jsonData => console.log(jsonData))
+}
 
 /* Misty skill stop endpoint 
 	 Make sure to have correct skill id string
 */
 function stopTest() {
 	Promise.race([
-		fetch('http://'+ ip +'/api/skills/cancel?skill=d83d7a01-f53e-47d8-a96e-0ba7b49d77ad', {
-			method: 'POST',
-			body: '{ "skill":"d83d7a01-f53e-47d8-a96e-0ba7b49d77ad" }'
-		}),
-		new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
-	])
-	.then(response => response.json())
-	.then(jsonData => console.log(jsonData))
-	.then(console.log("Skill has stopped!")
-	)
+			fetch('http://' + ip + '/api/skills/cancel?skill=d83d7a01-f53e-47d8-a96e-0ba7b49d77ad', {
+				method: 'POST',
+				body: '{ "skill":"d83d7a01-f53e-47d8-a96e-0ba7b49d77ad" }'
+			}),
+			new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
+		])
+		.then(response => response.json())
+		.then(jsonData => console.log(jsonData))
+		.then(console.log("Skill has stopped!"))
 }
 
 
@@ -142,105 +137,97 @@ async function goToFacialRecognition() {
 }
 
 /* Getting the startSkill() api and starting the questionaire skill. */
-function startQuestionaire(){
+function startQuestionaire() {
 	Promise.race([
-		fetch('http://'+ ip + '/api/skills/start?skill=d83d7a01-f53e-47d8-a96e-0ba7b49d77ad', {
-		  method: 'POST',
-		  body: '{ "skill":"d83d7a01-f53e-47d8-a96e-0ba7b49d77ad","method":null }'
-		}),
-		new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
-	  	])
-	  	.then(response => response.json())
+			fetch('http://' + ip + '/api/skills/start?skill=d83d7a01-f53e-47d8-a96e-0ba7b49d77ad', {
+				method: 'POST',
+				body: '{ "skill":"d83d7a01-f53e-47d8-a96e-0ba7b49d77ad","method":null }'
+			}),
+			new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
+		])
+		.then(response => response.json())
 		.then(jsonData => console.log(jsonData))
-		.then(console.log("Questionaire is starting...")
-		)
+		.then(console.log("Questionaire is starting..."))
 };
 
-function startFacialRecognition(){
+function startFacialRecognition() {
 	Promise.race([
-		fetch('http://'+ ip + '/api/skills/start?skill=d83d7a01-f53e-47d8-a96e-0ba7b49d77ad', {
-		  method: 'POST',
-		  body: '{ "skill":"febce520-c85d-4a52-bf0a-48de02190f79","method":null }'
-		}),
-		new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
-	  	])
-	  	.then(response => response.json())
+			fetch('http://' + ip + '/api/skills/start?skill=d83d7a01-f53e-47d8-a96e-0ba7b49d77ad', {
+				method: 'POST',
+				body: '{ "skill":"febce520-c85d-4a52-bf0a-48de02190f79","method":null }'
+			}),
+			new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
+		])
+		.then(response => response.json())
 		.then(jsonData => console.log(jsonData))
-		.then(console.log("Facial Recognition is starting...")
-		)
+		.then(console.log("Facial Recognition is starting..."))
 };
 
 
 /*******************************************************Everything under here is for Get Resident Button********************************************************************************/
 
 function startFaceRecognition() {
-  console.log("starting Test..");   
-    axios.post("http://" + ip + "/api/faces/recognition/start");
+	console.log("starting Test..");
+	axios.post("http://" + ip + "/api/faces/recognition/start");
 };
 
 async function startFaceTraining() {
-  console.log("starting face training");
-    axios.post("http://" + ip + "/api/faces/training/start", { FaceId: "Robin" });
-    await sleep(20000);
-  
-    console.log("face training complete");
-    axios.post("http://" + ip + "/api/faces/recognition/start");
+	console.log("starting face training");
+	axios.post("http://" + ip + "/api/faces/training/start", {
+		FaceId: "Robin"
+	});
+	await sleep(20000);
+
+	console.log("face training complete");
+	axios.post("http://" + ip + "/api/faces/recognition/start");
 };
 
-async function mistyGetResident(){
+async function mistyGetResident() {
 	let onList = false;
 	var residentName = document.getElementById("residentSearch").value;
-	console.log(residentName);
-
+	//console.log(residentName);
 	socket.Unsubscribe('FaceRecognition');
 	await sleep(3000);
-		
-		axios.get("http://" + ip + "/api/faces")
-			.then(function (res) {
-				let faceArr = res.data.result;
-				console.log("Learned faces: ", faceArr);
-	
-					for(let i = 0; i < faceArr.length; i++){
-						if(faceArr[i] === residentName){
-							console.log('Misty found'+ residentName);							
-							onList = true;
-						}
-					}
-	
-					socket.Subscribe("FaceRecognition", "FaceRecognition", 200, null, null, null, null, _FaceRecognition);   
-					console.log("subscribing to FaceRecognition");
-					
-					if(onList) {
-						console.log('You were found on the list!');
-							startFaceRecognition();
-					} else {
-						console.log('You were not on the list');
-							startFaceTraining();
-					}
-	
-			});
+
+	axios.get("http://" + ip + "/api/faces")
+		.then(function (res) {
+			let faceArr = res.data.result;
+			console.log("Learned faces: ", faceArr);
+
+			for (let i = 0; i < faceArr.length; i++) {
+				if (faceArr[i] === residentName) {
+					console.log('Misty found' + residentName);
+					onList = true;
+				}
+			}
+
+			socket.Subscribe("FaceRecognition", "FaceRecognition", 200, null, null, null, null, _FaceRecognition);
+			console.log("subscribing to FaceRecognition");
+
+			if (onList) {
+				console.log('You were found on the list!');
+				startFaceRecognition();
+			} else {
+				console.log('You were not on the list');
+				startFaceTraining();
+			}
+
+		});
 }
 
+/*Checks if face is in the Misty database.  */
 async function _FaceRecognition(data) {
-	
-  try {
-      if (data.message.personName !== "unknown person" && data.message.personName !== null && data.message.personName !== undefined) {
-          // If the face is recognized, print a 
-					// message to greet the person by name.
-					
-				//	await sleep(5000);
-					console.log('test');
-					
-          await getInfo(data.message.personName);
-          console.log(`A face was recognized. Hello there ${data.message.personName}!`);
-					//POST http://192.168.1.151/api/tts/speak
-					
-					var person = data.message.personName;
-					console.log(person);
+
+	var person = data.message.personName;
+
+	try {
+		if (data.message.personName !== "unknown person" && data.message.personName !== null && data.message.personName !== undefined) {
+			//await sleep(5000);
+			await getInfo(data.message.personName);
+			console.log(`A face was recognized. Hello there ${data.message.personName}!`);
 			
-			
-				Promise.race([
-					fetch(`http://`+ ip + `/api/tts/speak?text=Hello ${person}&flush=false`, {
+			Promise.race([
+					fetch(`http://` + ip + `/api/tts/speak?text=Hello ${person}&flush=false`, {
 						method: 'POST',
 						body: `{ "text":"Hello ${person}","flush":false,"utteranceId":null }`
 					}),
@@ -249,30 +236,29 @@ async function _FaceRecognition(data) {
 				.then(response => response.json())
 				.then(jsonData => console.log(jsonData))
 
-          // Unsubscribe from the FaceRecognition WebSocket.
-          socket.Unsubscribe("FaceRecognition");
-          // Use Axios to issue a POST command to the 
-          // endpoint for the StopFaceRecognition command.
-          axios.post("http://" + ip + "/api/faces/recognition/stop");
-      }
-  }
-  catch (e) {
-      console.log("Error: " + e);
-  }
+			// Unsubscribe from the FaceRecognition WebSocket.
+			socket.Unsubscribe("FaceRecognition");
+			// Use Axios to issue a POST command to the 
+			// endpoint for the StopFaceRecognition command.
+			axios.post("http://" + ip + "/api/faces/recognition/stop");
+		}
+	} catch (e) {
+		console.log("Error: " + e);
+	}
 }
 
-function getInfo(namee){
+/*Gets resident info from the database, appends info to html */
+function getInfo(residentName) {
 	$.ajax({
-		method:'GET',
-		url: `http://localhost:1234/resident/?name=${namee}`,
+		method: 'GET',
+		url: `http://localhost:1234/resident/?name=${residentName}`,
 		dataType: 'json'
-	}).done(function(data){
-		console.log(data[0]);
-		//$.map(data, function(post, i){
-			$('#result').append('<h3>'+ data[0].name +'</h3> <p>'+'Age: ' + data[0].age +'</p>'
-			 +'<p>'+'Location: ' + data[0].location +'</p>'
-			+ '<p>'+'Condition: ' + data[0].condition +'</p>'
-);
+	}).done(function (data) {
+
+		$('#result').append('<h3>' + data[0].name + '</h3> <p>' + 'Age: ' + data[0].age + '</p>' +
+			'<p>' + 'Location: ' + data[0].location + '</p>' +
+			'<p>' + 'Condition: ' + data[0].condition + '</p>'
+		);
 
 	});
 }
