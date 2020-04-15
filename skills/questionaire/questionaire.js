@@ -37,7 +37,7 @@ function getAccessToken(){
     misty.SendExternalRequest("POST",  _params.getAccessTokenUrl, null, null, null, false, false, null, "application/json", "SetAccessToken");
 }
 
-function SetAccessToken(data) {
+function SetAccessToken(data){
     let response = JSON.parse(data.Result.ResponseObject.Data)
     misty.Set("googleAccessToken", response.accessToken);
 
