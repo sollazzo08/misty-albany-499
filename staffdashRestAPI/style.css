@@ -92,3 +92,11 @@ textarea {
 #start {
   margin-left: 35%;
 }
+
+#success {
+  color: green;
+}
+
+#failure {
+ color: red;
+}
