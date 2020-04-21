@@ -11,6 +11,8 @@
 	<link rel="stylesheet" href="style.css">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
 		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Raleway:400,300,600,800,900" rel="stylesheet" type="text/css">
+	<script src="../staffdashRestAPI/tools/progessbar.js"></script>
 	<title>Misty Interface</title>
 </head>
 
@@ -71,13 +73,14 @@
 									<input class="form-control col-sm-2" type="number" id="dob" placeholder=""><br>
 									Location:
 									<input class="form-control" type="text" id="location" placeholder=""><br>
-									<!--
-											Image:
-											<input class="form-control" type="text" id="res_id" placeholder=""><br> 
-											-->
+									Image:
+									<div class="custom-file">					
+										<input class="custom-file-input" type="file" id="res_img"><br> 	
+										<label class="custom-file-label" for="res_img">Choose File</label>
+									</div>		
 									Condition:
 									<input class="form-control" type="text" id="condition" placeholder=""><br>
-									<input class="btn btn-info" type="submit" value="Add Resident">
+									<input id="submit_resident"class="btn btn-info" type="submit" value="Add Resident">
 								</div>
 							</form>
 						</div>
@@ -111,10 +114,8 @@
 									<input class="form-control col-sm-2" type="number" id="s_dob" placeholder=""><br>
 									Location:
 									<input class="form-control" type="text" id="s_location" placeholder=""><br>
-									<!--
 											Image:
-											<input class="form-control" type="text" id="res_id" placeholder=""><br> 
-											-->
+											<input class="form-control" type="text" id="res_image" placeholder=""><br> 	
 									Email:
 									<input class="form-control" type="text" id="s_email" placeholder=""><br>
 									<input class="btn btn-info" type="submit" value="Add Staff">
@@ -131,7 +132,7 @@
 	</div>
 
 	<!--Photo and use case section-->
-	<div class="row container-fluid pb-5">
+	<div class="row container-fluid mx-0">
 		<div class="col-md-4">
 			<div class="card mx-5">
 				<img class="card-img-top img-responsive" src="./public/placeholder-profile.jpg" alt="image">
@@ -144,7 +145,7 @@
 			</div>
 		</div>
 		<!--Use case section-->
-		<div class="col-md-8 flex-container mt-5">
+		<div class="col-md-6 flex-container">
 			<h3 class="text-center">Use Cases</h3>
 			<hr>
 			<div class="row-md-4 text-center mb-4">
@@ -157,6 +158,17 @@
 				<button class="btn btn-info" type="submit">Sleep Detection</button>
 			</div>
 			<hr>
+		</div>
+		<div class="col-md-2 flex-container mx-0 my-0">
+			<div class="row justify-content-center">
+				<div class="text-center" id="battery">
+					<h3>Battery Level</h3>
+					<p class="" id="battery"></p>
+				</div>
+			</div>
+			<div class="row">
+				<div id="container"></div>
+			</div>
 		</div>
 	</div>
 	<div class="my-5 ml-5">
@@ -187,6 +199,7 @@
 				var dob = $('#dob').val();
 				var location = $('#location').val();
 				var condition = $('#condition').val();
+				var res_image = $('#res_image').val();
 				var url = $(this).attr('action');
 
 				$.post(url, {
@@ -204,6 +217,8 @@
 				});
 			});
 		});
+
+
 	</script>
 	<script src="../staffdashRestAPI/js/test.js"></script>
 </body>

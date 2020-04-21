@@ -6,12 +6,76 @@ var questionaire = document.getElementById('questionaire');
 var residentSearch = document.getElementById('residentSearch');
 var facialRecognition = document.getElementById('facialRecognition');
 var getResidentBtn = document.getElementById('getResidentBtn');
+//var uploadImage = documanet.getElementById('res_image');
+var submitResident = document.getElementById('submit_resident');
 var ip;
+var loading_circle_flag = false;
 
 //Let misty pause to give her time to register and excute command
 function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
+showLoadingCircle(loading_circle_flag);
+$(document).ready(function () { 
+	$(".custom-file-input").on("change", function() {
+	var file = $(this).val().split("\\").pop();
+	const selectedFile = document.getElementById('res_img').files[0];
+ console.log(selectedFile);
+ console.log(selectedFile.name);
+  
+  let fileParts = selectedFile.name.split('.');
+  console.log(fileParts);
+	
+  let fileName = fileParts[0];
+	let fileType = fileParts[1];
+
+	console.log("Preparing the upload");
+	
+	axios.post("http://localhost:1234/sign_s3",{
+    fileName : fileName,
+    fileType : fileType
+  })
+  .then(response => {
+    var returnData = response.data.data.returnData;
+    console.log(returnData);
+    
+    var signedRequest = returnData.signedRequest;
+    console.log(signedRequest);
+    
+    var url = returnData.url;
+    console.log(url);
+    
+    console.log("Recieved a signed request " + signedRequest);
+    /*
+      http://localhost:9000/image
+      http://ec2-3-17-26-49.us-east-2.compute.amazonaws.com:9000/image
+    */
+    axios.post("http://localhost:1234/image", {                      
+      url: url
+    }).then(() => console.log("Sent url to db"))
+      .catch((err) => console.log(err));
+   // Put the fileType in the headers for the upload
+    var options = {
+      headers: {
+        'Content-Type': fileType
+      }
+    };
+    axios.put(signedRequest,file,options)
+    .then(result => {
+      console.log("Response from s3")
+      console.log(options);
+      
+      
+    })
+    .catch(error => {
+      alert("ERROR " + JSON.stringify(error));
+    })
+  })
+  .catch(error => {
+    alert(JSON.stringify(error));
+  })
+})
+});
 
 /* Connects to Misty on click */
 connect.onclick = function () {
@@ -30,6 +94,7 @@ connect.onclick = function () {
 	client = new LightClient(ip, 10000);
 	client.GetCommand("device", function (data) {
 		console.log("Connected to Misty");
+		getBattery();
 		document.getElementById("success").innerHTML = message.success;
 		console.log(data);
 	});
@@ -51,13 +116,13 @@ getResidentBtn.onclick = function () {
 
 /* Starts questionaire use case */
 questionaire.onclick = function () {
-	socket = new LightSocket(ip, startTest);
+	socket = new LightSocket(ip, startQuestionaire);
 	ip = validateIPAddress(ipAddress.value);
 	if (!ip) {
 		console.log("You must connect to a robot first.");
 		return;
 	}
- 	goToQuestionaire();
+ 	//goToQuestionaire();
 	socket.Connect();
 };
 
@@ -89,7 +154,7 @@ testStopSkill.onclick = function () {
 	stopTest();
 };
 
-
+/*
 async function startTest() {
 	//Sleep for 5 seconds to give Misty time ~ time may need to be adjusted
 	await sleep(5000);
@@ -104,7 +169,7 @@ async function startTest() {
 		.then(response => response.json())
 		.then(jsonData => console.log(jsonData))
 }
-
+*/
 /* Misty skill stop endpoint 
 	 Make sure to have correct skill id string
 */
@@ -137,11 +202,11 @@ async function goToFacialRecognition() {
 }
 
 /* Getting the startSkill() api and starting the questionaire skill. */
-function startQuestionaire() {
-	Promise.race([
-			fetch('http://' + ip + '/api/skills/start?skill=d83d7a01-f53e-47d8-a96e-0ba7b49d77ad', {
+function startQuestionaire() {												// d83d7a01-f53e-47d8-a96e-0ba7b49d77ad ~ capture speech
+	Promise.race([																			// baca7c34-3133-4b27-a5f4-dc1aa4855b3b ~ questionaire 
+			fetch('http://' + ip + '/api/skills/start?skill=baca7c34-3133-4b27-a5f4-dc1aa4855b3b', {
 				method: 'POST',
-				body: '{ "skill":"d83d7a01-f53e-47d8-a96e-0ba7b49d77ad","method":null }'
+				body: '{ "skill":"baca7c34-3133-4b27-a5f4-dc1aa4855b3b","method":null }'
 			}),
 			new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
 		])
@@ -173,8 +238,10 @@ function startFaceRecognition() {
 
 async function startFaceTraining() {
 	console.log("starting face training");
+	var residentName = document.getElementById("residentSearch").value;
 	axios.post("http://" + ip + "/api/faces/training/start", {
-		FaceId: "Robin"
+
+		FaceId: residentName
 	});
 	await sleep(20000);
 
@@ -209,9 +276,11 @@ async function mistyGetResident() {
 				startFaceRecognition();
 			} else {
 				console.log('You were not on the list');
+				console.log(loading_circle_flag);
+				loading_circle_flag = true;
+				console.log(loading_circle_flag);
 				startFaceTraining();
 			}
-
 		});
 }
 
@@ -263,6 +332,23 @@ function getInfo(residentName) {
 	});
 }
 
+function getBattery(){
+	
+Promise.race([
+	fetch('http://'+ ip + '/api/battery', {
+		method: 'GET'
+	}),
+	new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
+])
+.then(response => response.json())
+//.then(jsonData => console.log(jsonData.result.chargePercent))
+.then(jsonData => {
+	var batteryLevel = jsonData.result.chargePercent;
+	console.log(batteryLevel);
+	$('#battery').append('<h3>'+ batteryLevel * (100) + '%' +'<h3>');
+})
+}
+
 /*
 function stopTest2() {
 	client.PostCommand("faces/detection/stop");
@@ -288,3 +374,51 @@ function validateIPAddress(ip) {
 	}
 	return ip;
 };
+
+// progressbar.js@1.0.0 version is used
+// Docs: http://progressbarjs.readthedocs.org/en/1.0.0/
+
+function showLoadingCircle(flag) {
+	console.log(flag);
+	
+	var bar = new ProgressBar.Circle(container, {
+		color: '#aaa',
+		// This has to be the same size as the maximum width to
+		// prevent clipping
+		strokeWidth: 4,
+		trailWidth: 1,
+		easing: 'easeInOut',
+		duration: 11000,
+		text: {
+			autoStyleContainer: false
+		},
+		from: { color: '#aaa', width: 1 },
+		to: { color: '#5bc0de', width: 4 },
+		// Set default step function for all animate calls
+		step: function(state, circle) {		
+			circle.path.setAttribute('stroke', state.color);
+			circle.path.setAttribute('stroke-width', state.width);
+			
+			var value = Math.round(circle.value() * 100);
+			if (value === 0) {
+				circle.setText('');
+			} else {
+				circle.setText(value);
+			}			
+		}
+		
+	});
+	
+	bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+	bar.text.style.fontSize = '2rem';
+
+	
+	if(loading_circle_flag === true){
+
+		bar.animate(1.0);  // Number from 0.0 to 1.0
+	}
+
+		
+
+}
+
