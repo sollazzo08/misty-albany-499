@@ -75,7 +75,7 @@ function startToListen() {
 
    //misty.Set("textToSpeak", "Hello, are you awake? Please verify by saying I'm awake or I'm up.", false);
    //speakTheText();
-   misty.PlayAudio("sleep_detect.wav", 10);
+   misty.PlayAudio("sleep_detect.wav", 50);
    misty.Pause(7000);
    processResponse();
     // We start key phrase recognition and set voice recording to begin
