@@ -147,7 +147,7 @@ function ProcessDialogFlowResponse(data) {
     misty.Debug("Intent: " + intent);
     misty.Debug("Input text: " + response.queryResult.queryText);
     
-    else if(intent == "Sleep Detection - yes"){
+    if(intent == "Sleep Detection - yes"){
         //Misty makes a happy face and moves her arms to show she's happy.
         animateCompliance();
         misty.Debug("Good! You're awake!");
