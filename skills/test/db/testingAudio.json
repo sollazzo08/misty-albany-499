@@ -1,0 +1,18 @@
+{
+    "Name": "testingAudio",
+    "UniqueId": "22a75504-95b3-4e57-b0ba-bb476ffb4bce",
+    "Description": "My skill is amazing!",
+    "StartupRules": [
+      "Manual",
+      "Robot"
+    ],
+    "Language": "javascript",
+    "BroadcastMode": "verbose",
+    "TimeoutInSeconds": 600,
+    "CleanupOnCancel": true,
+    "WriteToLog": false,
+    "Parameters": {
+        "getAccessTokenUrl": "https://us-central1-mistyvoicecommand-otapmj.cloudfunctions.net/get-access-token ",
+		    "projectID": "mistyvoicecommand-otapmj"
+    }
+  }
