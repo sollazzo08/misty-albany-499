@@ -21,7 +21,7 @@ async function startTest() {
 
 /* Misty skill stop endpoint 
 	 Make sure to have correct skill id string
-*/
+
 function stopTest() {
 	Promise.race([
 			fetch('http://' + ip + '/api/skills/cancel?skill=d83d7a01-f53e-47d8-a96e-0ba7b49d77ad', {
@@ -34,7 +34,7 @@ function stopTest() {
 		.then(jsonData => console.log(jsonData))
 		.then(console.log("Skill has stopped!"))
 }
-
+*/
 
 /* Gives Misty time to rest and process. */
 async function goToQuestionaire() {
@@ -53,9 +53,11 @@ async function goToFacialRecognition() {
 /* Getting the startSkill() api and starting the questionaire skill. */
 function startQuestionaire() {												// d83d7a01-f53e-47d8-a96e-0ba7b49d77ad ~ capture speech
 	Promise.race([																			// baca7c34-3133-4b27-a5f4-dc1aa4855b3b ~ questionaire 
-			fetch('http://' + ip + '/api/skills/start?skill=baca7c34-3133-4b27-a5f4-dc1aa4855b3b', {
+																											// 22a75504-95b3-4e57-b0ba-bb476ffb4bce ~ questionaire-2
+																										
+			fetch('http://' + ip + '/api/skills/start?skill=22a75504-95b3-4e57-b0ba-bb476ffb4bce', {
 				method: 'POST',
-				body: '{ "skill":"baca7c34-3133-4b27-a5f4-dc1aa4855b3b","method":null }'
+				body: '{ "skill":"22a75504-95b3-4e57-b0ba-bb476ffb4bce","method":null }'
 			}),
 			new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
 		])

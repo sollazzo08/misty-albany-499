@@ -1,7 +1,7 @@
 var ipAddress = document.getElementById('ip');
 var connect = document.getElementById('connect');
-var testStartSkill = document.getElementById('testStartSkill');
-var testStopSkill = document.getElementById('testStopSkill');
+//var testStartSkill = document.getElementById('testStartSkill');
+//var testStopSkill = document.getElementById('testStopSkill');
 var questionaire = document.getElementById('questionaire');
 var residentSearch = document.getElementById('residentSearch');
 var facialRecognition = document.getElementById('facialRecognition');
@@ -118,8 +118,8 @@ $(document).ready(function () {
     
     console.log("Recieved a signed request " + signedRequest);
     /*
-      http://localhost:9000/image
-      http://ec2-3-17-26-49.us-east-2.compute.amazonaws.com:9000/image
+      local: http://localhost:9000/image
+      ec2: http://ec2-3-17-26-49.us-east-2.compute.amazonaws.com:9000/image
     */
     axios.post("http://localhost:1234/image", {                      
       url: url
