@@ -3,6 +3,16 @@
  * to verify that they are awake. 
 */
 
+//function to set Misty in a "home" position, looking straight ahead, arms to the side, etc
+function robotHomePosition() 
+{
+    misty.MoveHead(0, 0, 0, null, 1);
+    misty.DisplayImage("e_DefaultContent.jpg");
+    misty.MoveArmDegrees("both", 90, 100);
+    misty.SetDefaultVolume(100);
+}
+robotHomePosition();
+
 // Kicks everything off!
 getAccessToken();
 
@@ -90,6 +100,34 @@ function _VoiceRecord(){
     misty.Debug("Speech captured.")
     misty.GetAudioFile("capture_HeyMisty.wav", "ProcessAudioFile");
     ProcessAudioFile("capture_HeyMisty.wav");
+
+    /*
+    var filename = data.AdditionalResults[0];
+    var success = data.AdditionalResults[1];
+    var errorCode = data.AdditionalResults[2];
+    var errorMessage = data.AdditionalResults[3];
+
+    // If voice recording is successful, send to Dialogflow
+    if (success) 
+    {
+        misty.Debug("Audio Recording Successful");
+        //misty.GetAudioFile(filename, "callDialogflow");
+        //if (misty.Get("findFace")) misty.MoveHead(-20, 20, null, 95);
+        misty.DisplayImage("e_ContentLeft.jpg");
+        misty.PlayAudio("s_SystemSuccess.wav", 100);
+    }
+    // Otherwise, print the error message
+    else 
+    {
+        misty.Debug("Error: " + errorCode + ". " + errorMessage);
+        misty.Set("langCodeForTTS", "en-US", false);
+        misty.Set("textToSpeak", "Come again?", false);
+        //misty.Set("textToSpeak", "English, Motherfucker, do you speak it?", false);
+        speakTheText();
+    }
+
+    misty.Set("recordingAudio", false, false);
+    */
 }
 
 function _SpeechCaptured(data) {
@@ -104,6 +142,16 @@ function _SpeechCaptured(data) {
     }
     misty.Debug("Time to Process " + filename);
     misty.GetAudioFile(filename, "ProcessAudioFile");
+    /*
+    //make sure speech captured
+    else 
+    {
+        misty.Set("langCodeForTTS", "en-US", false);
+        misty.Set("textToSpeak", "Speech not captured.", false);
+        //misty.Set("textToSpeak", "English, Motherfucker, do you speak it?", false);
+        speakTheText();
+    }
+    */
 }
 
 // Sends speech recording to DialogFlow. Dialogflow uses 
