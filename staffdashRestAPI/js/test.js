@@ -35,6 +35,27 @@ function stopTest() {
 		.then(console.log("Skill has stopped!"))
 }
 */
+/*Take picture endpoint */
+//GET http://192.168.1.151/api/cameras/rgb?base64=false&fileName=test_3&displayOnScreen=false&overwriteExisting=false
+function takePhoto(){
+	var fileName = document.getElementById("takePhoto").value;
+	
+	Promise.race([
+	
+		fetch('http://'+ ip +`/api/cameras/rgb?base64=false&fileName=&displayOnScreen=false&overwriteExisting=false`, {
+			method: 'GET',
+			FileName: "testy",
+			headers : { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+       }
+		}),
+		new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
+	])
+	.then(response => response.json())
+	.then(jsonData => console.log(jsonData))
+
+}
 
 /* Gives Misty time to rest and process. */
 async function goToQuestionaire() {

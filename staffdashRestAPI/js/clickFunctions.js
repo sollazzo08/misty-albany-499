@@ -7,6 +7,7 @@ var residentSearch = document.getElementById('residentSearch');
 var facialRecognition = document.getElementById('facialRecognition');
 var getResidentBtn = document.getElementById('getResidentBtn');
 var submitResident = document.getElementById('submit_resident');
+var takePhoto = document.getElementById('takePhotoBtn');
 //var uploadImage = documanet.getElementById('res_image');
 var ip;
 
@@ -85,6 +86,13 @@ testStartSkill.onclick = function () {
 testStopSkill.onclick = function () {
 	stopTest();
 };
+
+/* Take Photo button */
+ takePhotoBtn.onclick = function() {
+   console.log('test');
+    takePhoto();
+ }
+
 
 /*S3 bucket image upload */
 $(document).ready(function () { 
