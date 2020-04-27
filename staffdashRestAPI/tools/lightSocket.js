@@ -14,8 +14,8 @@ implied.
 *    limitations under the License.
 */
 
-function LightSocket(ip, OnOpenCallback = null, OnCloseCallback = null, OnErrorCallback = null) {
-
+function LightSocket(ip,OnOpenCallback = null, OnCloseCallback = null, OnErrorCallback = null) {
+	
 	var ipAddress = (ip === null ? "localhost" : ip);
 	var eventListeners = new Map();
 
@@ -72,6 +72,8 @@ function LightSocket(ip, OnOpenCallback = null, OnCloseCallback = null, OnErrorC
 			console.log("Opened socket");
 			if (OnOpenCallback) {
 				OnOpenCallback(event.data);
+				console.log(event.data);
+				
 			}
 		};
 

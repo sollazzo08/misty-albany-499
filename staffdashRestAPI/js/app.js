@@ -106,18 +106,24 @@ async function startFaceTraining() {
     axios.post("http://" + ip + "/api/faces/recognition/start");
 };
 
-function _FaceRecognition(data, lightClient) {
+async function _FaceRecognition(data, lightClient) {
+
+
   try {
       if (data.message.personName !== "unknown person" && data.message.personName !== null && data.message.personName !== undefined) {
           // If the face is recognized, print a 
-          // message to greet the person by name.
-      
+					// message to greet the person by name.
+					
+					//await sleep(5000);
+
+          await getInfo(data.message.personName);
           console.log(`A face was recognized. Hello there ${data.message.personName}!`);
 					//POST http://192.168.1.151/api/tts/speak
 					
 					var person = data.message.personName;
 					console.log(person);
-					
+			
+			
 				Promise.race([
 					fetch(`http://`+ ip + `/api/tts/speak?text=Hello ${person}&flush=false`, {
 						method: 'POST',
@@ -141,7 +147,21 @@ function _FaceRecognition(data, lightClient) {
       console.log("Error: " + e);
   }
 }
+function getInfo(namee){
+	$.ajax({
+		method:'GET',
+		url: `http://localhost:1234/resident/?name=${namee}`,
+		dataType: 'json'
+	}).done(function(data){
+		console.log(data[0]);
+		//$.map(data, function(post, i){
+			$('#result').append('<h3>'+ data[0].name +'</h3> <p>'+'Age: ' + data[0].age +'</p>'
+			 +'<p>'+'Location: ' + data[0].location +'</p>'
+			+ '<p>'+'Condition: ' + data[0].condition +'</p>'
+);
 
+	});
+}
 function validateIPAddress(ip) {
 	var ipNumbers = ip.split(".");
 	var ipNums = new Array(4);

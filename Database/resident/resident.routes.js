@@ -1,7 +1,7 @@
 
 const express = require('express');
 const resident = require('./resident.controller');
-
+const Resident = require('./resident.model');
 //onst router = express.Router();
 
 //const Resident = require('./resident.model');
@@ -16,8 +16,33 @@ module.exports = (route) => {
     //Retrieving a single resident from db
     route.get('/resident/:id', resident.findById);
 
-  
-
+    route.get('/resident/',
+    
+    function(req,res){
+        var name = req.query.name;
+        Resident.find({name: name})
+        .then(resident => {
+            if(resident)
+                res.send(resident);
+            
+            return res.status(404).send({
+                message: "Resident not found with name " + r_id
+            });
+        })
+            .catch(err => res.status(404).json({success: false}))
+        }   
+    );
+/*
+    router.route("/getData").get(function(req, res) {
+        kennels.find({}, function(err, result) {
+          if (err) {
+            res.send(err);
+          } else {
+            res.send(result);
+          }
+        });
+      });
+*/
     //Update a resident with a r_id
     route.put('/resident/:r_id', resident.update);
 

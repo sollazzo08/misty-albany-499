@@ -37,10 +37,13 @@ exports.findAll = (req, res) => {
 };
 
  exports.findByName = (req,res) => {
-     Resident.find().byName('Mike').exec(function(err, resident) {
-        res.send(resident);
-  });
- };
+    var name = req.param('name'); 
+    Resident.find({name: name})
+        .then(resident => res.json(resident))
+        .catch(err => res.status(404).json({success: false}))
+    };
+         
+
 //Retrieving a single resident
 exports.findById = (req, res) => {
     Resident.findById(req.params.id)

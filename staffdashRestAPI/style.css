@@ -92,3 +92,19 @@ textarea {
 #start {
   margin-left: 35%;
 }
+
+#success {
+  color: green;
+}
+
+#failure {
+ color: red;
+}
+
+#container {
+  margin: 20px;
+  width: 200px;
+  height: 200px;
+  position: relative;
+  
+}
