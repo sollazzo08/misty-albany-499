@@ -204,8 +204,12 @@ function ProcessDialogFlowResponse(data) {
         speakTheText();
        
         misty.Pause(7000);
-        //processResponse();
-        misty.CancelSkill("1cde7616-1f78-49e2-9cb1-de7827e98dee");
+        
+        //This ends the skill, put back after testing something 4-27-2020
+        //misty.CancelSkill("1cde7616-1f78-49e2-9cb1-de7827e98dee");
+        misty.ChangeLED(255, 0, 0);
+        misty.StartFaceRecognition();
+        registerFaceRec();
 
     }
     /*
@@ -219,21 +223,28 @@ function ProcessDialogFlowResponse(data) {
         misty.CancelSkill("1cde7616-1f78-49e2-9cb1-de7827e98dee");
     }
     */
+   /*
     else {
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
         speakTheText();
         misty.Pause(3000);
         processResponse();
     }
-    /*
+    */
+    
+    //Either Misty didn't understand what the user said or the user didn't say anything
+    //She plays an alarm, prompts user to again and listens again for a response
    else {
        //maybe this'll work *shrug*
        misty.PlayAudio("Warning Siren.mp3", 10);
        misty.Pause(5000);
-       misty.Speak("WAKE UP YOU SWINE! I can't deal with you right now, I'm out.");
-       misty.CancelSkill("1cde7616-1f78-49e2-9cb1-de7827e98dee");
+       misty.PlayAudio("sleep_detect.wav", 90);
+       misty.Pause(5000);
+       misty.Debug("Misty didn't hear user or didn't understand response. Please try again.")
+       //listens for response again.
+       processResponse();
    }
-   */
+   
 }
 
 function animateCompliance() {
@@ -309,4 +320,38 @@ function processResponse() {
     misty.AddReturnProperty("SpeechCaptured", "Filename");
     misty.AddReturnProperty("SpeechCaptured", "Success");
     misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
+}
+
+function registerFaceRec() 
+{
+    misty.RegisterEvent("FaceRec", "FaceRecognition", 1000, false);
+}
+
+function _FaceRec(data) 
+{
+    var faceDetected = data.PropertyTestResults[0].PropertyParent.Label;
+
+    misty.Debug(faceDetected);
+
+    if (faceDetected == "unknown person") {
+        misty.ChangeLED(255, 0, 0);
+        misty.DisplayImage("e_Disgust.jpg");
+        misty.MoveArmDegrees("right", 70, 50);
+        misty.Pause(50);
+        misty.MoveArmDegrees("left", 70, 50);
+        misty.ClearDisplayText();
+    } else if (faceDetected) {
+        misty.ChangeLED(148, 0, 211);
+        misty.PlayAudio("s_Joy.wav");
+        misty.DisplayImage("e_Joy2.jpg");
+        misty.MoveArmDegrees("right", -80, 50);
+        misty.Pause(50);
+        misty.MoveArmDegrees("left", -80, 50);
+        misty.Pause(3000);
+        misty.Speak("Hello " + faceDetected);
+        misty.DisplayText(faceDetected);
+        //Since person is recognized we end the skill
+        misty.CancelSkill("1cde7616-1f78-49e2-9cb1-de7827e98dee");
+
+    }
 }
