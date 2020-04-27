@@ -71,9 +71,7 @@ function LightSocket(ip,OnOpenCallback = null, OnCloseCallback = null, OnErrorCa
 		websocket.onopen = function (event) {
 			console.log("Opened socket");
 			if (OnOpenCallback) {
-				OnOpenCallback(event.data);
-				console.log(event.data);
-				
+				OnOpenCallback(event.data);				
 			}
 		};
 

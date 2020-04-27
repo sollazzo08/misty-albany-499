@@ -126,7 +126,18 @@
 			</div>
 		</div>
 		<!--Spacer for the top level row-->
-		<div class="col-md-4"></div>
+		<div class="col-md-1"></div>
+		<!--Take Photo section-->
+		<div class="col-md-3 pr-5">
+			<div class="row border justify-content-center text-center ">
+				<h3 class="">Take Photo</h3>
+				<form class="form-inline justify-content-center" action="">
+					<input id="takePhoto" class="form-control" type="search" placeholder="Filename">
+					<button id="takePhotoBtn" class="btn btn-info" type="button">Take Photo</button>
+					<div class="mr-2"></div>
+				</form>
+			</div>
+		</div>
 		<!--Display for Misty's battery level-->
 		<div class="col-md-2">
 			<div class="row justify-content-center border mb-4">
@@ -137,7 +148,6 @@
 			</div>
 		</div>
 	</div>
-
 	<!--Photo and use case section-->
 	<div class="row container-fluid px-0">
 		<div class="col-md-4 px-0">
@@ -166,12 +176,15 @@
 			</div>
 			<hr>
 		</div>
-		<div class="col-md-2 flex-container mx-0 my-0">
-		
+		<div class="col-md-2 flex-container mx-0 my-0">	
 			<div class="row justify-content-center border text-center">
 				<h3>Face Training Progress</h3>
 				<div id="container"></div>
 			</div>
+		</div>
+	</div>
+	<div class="row mr-3">
+		<div class="col-md-10">
 		</div>
 	</div>
 	<div class="my-5 ml-5">
@@ -225,7 +238,7 @@
 
 	</script>
 	<script src="../staffdashRestAPI/js/clickFunctions.js"></script>
-	<script src="../staffdashRestAPI/js/test.js"></script>
+	<script src="../staffdashRestAPI/js/misty.js"></script>
 
 </body>
 

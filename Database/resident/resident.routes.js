@@ -26,7 +26,7 @@ module.exports = (route) => {
                 res.send(resident);
             
             return res.status(404).send({
-                message: "Resident not found with name " + r_id
+                message: "Resident not found with name" + r_id
             });
         })
             .catch(err => res.status(404).json({success: false}))
