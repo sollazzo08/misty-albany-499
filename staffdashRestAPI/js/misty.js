@@ -1,105 +1,79 @@
+const questionaireID = '22a75504-95b3-4e57-b0ba-bb476ffb4bce';
+const facialRecognitionID = 'febce520-c85d-4a52-bf0a-48de02190f79';
+
 //Let misty pause to give her time to register and excute command
+
 function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
-/*
-async function startTest() {
-	//Sleep for 5 seconds to give Misty time ~ time may need to be adjusted
-	await sleep(5000);
 
-	Promise.race([
-			fetch('http://' + ip + '/api/skills/start?skill=d83d7a01-f53e-47d8-a96e-0ba7b49d77ad', {
-				method: 'POST',
-				body: '{ "skill":"d83d7a01-f53e-47d8-a96e-0ba7b49d77ad","method":null }'
-			}),
-			new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
-		])
-		.then(response => response.json())
-		.then(jsonData => console.log(jsonData))
-}
-*/
 
-/* Misty skill stop endpoint 
-	 Make sure to have correct skill id string
-
-function stopTest() {
-	Promise.race([
-			fetch('http://' + ip + '/api/skills/cancel?skill=d83d7a01-f53e-47d8-a96e-0ba7b49d77ad', {
-				method: 'POST',
-				body: '{ "skill":"d83d7a01-f53e-47d8-a96e-0ba7b49d77ad" }'
-			}),
-			new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
-		])
-		.then(response => response.json())
-		.then(jsonData => console.log(jsonData))
-		.then(console.log("Skill has stopped!"))
-}
-*/
 /*Take picture endpoint */
 //GET http://192.168.1.151/api/cameras/rgb?base64=false&fileName=test_3&displayOnScreen=false&overwriteExisting=false
 function takePhoto(){
 	var fileName = document.getElementById("takePhoto").value;
 	
-	Promise.race([
-	
-		fetch('http://'+ ip +`/api/cameras/rgb?base64=false&fileName=&displayOnScreen=false&overwriteExisting=false`, {
-			method: 'GET',
-			FileName: "testy",
+		axios.get('http://'+ ip +`/api/cameras/rgb?base64=false&fileName=&displayOnScreen=false&overwriteExisting=false`, {
+			FileName: fileName,
 			headers : { 
         'Content-Type': 'application/json',
         'Accept': 'application/json'
        }
+		})
+	.then(console.log("misty took a photo"))
+
+
+	Promise.race([
+		fetch('http://'+ ip + '/api/images?fileName=e_Admiration.jpg&base64=false', {
+			method: 'GET'
 		}),
 		new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
 	])
-	.then(response => response.json())
-	.then(jsonData => console.log(jsonData))
+	.then(response => { return response.body.getReader().read().then((result) => { return result; }); })
+	//In your code you can use this result to create a URL
+	var blob = new Blob([result.value]);
+	var url = window.URL.createObjectURL(blob);
+	
+	console.log(blob);
+	console.log(url);
 
 }
 
-/* Gives Misty time to rest and process. */
-async function goToQuestionaire() {
-	//Sleep for 5 seconds
-	await sleep(5000);
-	startQuestionaire();
-}
+//Now you can use this URL to set the source of your element
+//You may also simply use this as a Url for the source field of an html element
 
-/* Gives Misty time to rest and process. */
-async function goToFacialRecognition() {
-	//Sleep for 5 seconds
-	await sleep(5000);
-	startFacialRecognition();
-}
 
 /* Getting the startSkill() api and starting the questionaire skill. */
-function startQuestionaire() {												// d83d7a01-f53e-47d8-a96e-0ba7b49d77ad ~ capture speech
-	Promise.race([																			// baca7c34-3133-4b27-a5f4-dc1aa4855b3b ~ questionaire 
-																											// 22a75504-95b3-4e57-b0ba-bb476ffb4bce ~ questionaire-2
-																										
-			fetch('http://' + ip + '/api/skills/start?skill=22a75504-95b3-4e57-b0ba-bb476ffb4bce', {
-				method: 'POST',
-				body: '{ "skill":"22a75504-95b3-4e57-b0ba-bb476ffb4bce","method":null }'
-			}),
-			new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
-		])
-		.then(response => response.json())
-		.then(jsonData => console.log(jsonData))
-		.then(console.log("Questionaire is starting..."))
+function startQuestionaire() {	
+	
+	
+		axios.post(`http://` + ip + `/api/skills/start?skill=${questionaireID}`, {
+				Skill: questionaireID
+		})
+			.then(response => (console.log(response)))
+			.then(console.log("Questionaire skill is starting..."))
+			.catch(err => (console.log(err)))
 };
 
 function startFacialRecognition() {
-	Promise.race([
-			fetch('http://' + ip + '/api/skills/start?skill=d83d7a01-f53e-47d8-a96e-0ba7b49d77ad', {
-				method: 'POST',
-				body: '{ "skill":"febce520-c85d-4a52-bf0a-48de02190f79","method":null }'
-			}),
-			new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
-		])
-		.then(response => response.json())
-		.then(jsonData => console.log(jsonData))
-		.then(console.log("Facial Recognition is starting..."))
+		axios.post(`http://` + ip + `/api/skills/start?skill=${facialRecognitionID}`, {
+				Skill: facialRecognitionID
+		})
+			.then(response => (console.log(response)))
+			.then(console.log("Facial Recognition is starting..."))
+			.catch(err => (console.log(err)))
 };
-
+/*
+function stopSkill(skill){
+	let skill = skillBeingStopped
+		axios.post(`http://`+ ip + `/api/skills/cancel?/skill=${facialRecognitionID}`, {
+				Skill: facialRecognitionID
+		})
+			.then(response => (console.log(response)))
+			.then(console.log("Stopping SKill"))
+			.catch(err => (console.log(err)))
+};
+*/
 
 /*******************************************************Everything under here is for Get Resident Button********************************************************************************/
 
@@ -166,7 +140,18 @@ async function _FaceRecognition(data) {
 			//await sleep(5000);
 			await getInfo(data.message.personName);
 			console.log(`A face was recognized. Hello there ${data.message.personName}!`);
-			
+
+			//POST http://192.168.1.151/api/audio/play
+			Promise.race([
+				fetch('http://192.168.1.151/api/audio/play?fileName=face.wav', {
+					method: 'POST',
+					body: '{ "fileName":"face.wav","volume":null }'
+				}),
+				new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
+			])
+			.then(response => response.json())
+			.then(jsonData => console.log(jsonData))
+			/*
 			Promise.race([
 					fetch(`http://` + ip + `/api/tts/speak?text=Hello ${person}&flush=false`, {
 						method: 'POST',
@@ -176,7 +161,7 @@ async function _FaceRecognition(data) {
 				])
 				.then(response => response.json())
 				.then(jsonData => console.log(jsonData))
-
+			*/
 			// Unsubscribe from the FaceRecognition WebSocket.
 			socket.Unsubscribe("FaceRecognition");
 			// Use Axios to issue a POST command to the 
@@ -200,7 +185,8 @@ function getInfo(residentName) {
 			'<p>' + 'Location: ' + data[0].location + '</p>' +
 			'<p>' + 'Condition: ' + data[0].condition + '</p>'
 		);
-
+		console.log(data);
+		
 	});
 }
 
@@ -220,7 +206,7 @@ function getBattery(){
 	})
 }
 
-/*
+
 function stopTest2() {
 	client.PostCommand("faces/detection/stop");
 	console.log("Stopping Test");
@@ -228,7 +214,7 @@ function stopTest2() {
   socket.close();
   messageCount = 0;
 }
-*/
+
 
 
 // progressbar.js@1.0.0 version is used
@@ -243,7 +229,7 @@ function stopTest2() {
 		strokeWidth: 4,
 		trailWidth: 1,
 		easing: 'easeInOut',
-		duration: 24000,
+		duration: 25000,
 		text: {
 			autoStyleContainer: false
 		},
