@@ -1,12 +1,12 @@
 var ipAddress = document.getElementById('ip');
 var connect = document.getElementById('connect');
-//var testStartSkill = document.getElementById('testStartSkill');
-//var testStopSkill = document.getElementById('testStopSkill');
+var stopSkill = document.getElementById('testStopSkill');
 var questionaire = document.getElementById('questionaire');
 var residentSearch = document.getElementById('residentSearch');
 var facialRecognition = document.getElementById('facialRecognition');
 var getResidentBtn = document.getElementById('getResidentBtn');
 var submitResident = document.getElementById('submit_resident');
+var takePhoto = document.getElementById('takePhotoBtn');
 //var uploadImage = documanet.getElementById('res_image');
 var ip;
 
@@ -60,33 +60,31 @@ questionaire.onclick = function () {
 
 /* Starts the facial recognition use case */
 facialRecognition.onclick = function () {
-	socket = new LightSocket(ip, startTest);
+	socket = new LightSocket(ip, startFacialRecognition);
 	ip = validateIPAddress(ipAddress.value);
 		if (!ip) {
 			console.log("You must connect to a robot first.");
 			return;
 		}
-	goToFacialRecognition();
 	socket.Connect();
 }
 
-/* Test button */
-testStartSkill.onclick = function () {
-	socket = new LightSocket(ip, startTest);
-	ip = validateIPAddress(ipAddress.value);
-		if (!ip) {
-			console.log("You must connect to a robot first.");
-			return;
-		}
-	socket.Connect();
+
+/* Test stop button  */
+stopSkill.onclick = function () {
+	stopSkill();
 };
 
-/* Test stop button */
-testStopSkill.onclick = function () {
-	stopTest();
-};
 
-/*S3 bucket image upload */
+/* Take Photo button */
+ takePhotoBtn.onclick = function() {
+   console.log('test');
+    takePhoto();
+ }
+
+/*
+
+/*S3 bucket image upload 
 $(document).ready(function () { 
 	$(".custom-file-input").on("change", function() {
 	var file = $(this).val().split("\\").pop();
@@ -117,10 +115,11 @@ $(document).ready(function () {
     console.log(url);
     
     console.log("Recieved a signed request " + signedRequest);
+  
     /*
       local: http://localhost:9000/image
       ec2: http://ec2-3-17-26-49.us-east-2.compute.amazonaws.com:9000/image
-    */
+    
     axios.post("http://localhost:1234/image", {                      
       url: url
     }).then(() => console.log("Sent url to db"))
@@ -148,6 +147,7 @@ $(document).ready(function () {
 })
 });
 
+*/
 
 /* Converts ip into a string that can be read */
 function validateIPAddress(ip) {
