@@ -1,0 +1,18 @@
+{
+    "Name": "autismQuestionaire",
+    "UniqueId": "71224d1b-7e57-4b0b-b0d6-3f3d37bca45f",
+    "Description": "My skill is amazing!",
+    "StartupRules": [
+      "Manual",
+      "Robot"
+    ],
+    "Language": "javascript",
+    "BroadcastMode": "verbose",
+    "TimeoutInSeconds": 600,
+    "CleanupOnCancel": true,
+    "WriteToLog": false,
+    "Parameters": {
+        "getAccessTokenUrl": "https://us-central1-mistyvoicecommand-otapmj.cloudfunctions.net/get-access-token ",
+		"projectID": "mistyvoicecommand-otapmj"
+    }
+  }
