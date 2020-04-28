@@ -4,6 +4,7 @@ var stopSkills = document.getElementById('stopSkills');
 var questionaire = document.getElementById('questionaire');
 var residentSearch = document.getElementById('residentSearch');
 var facialRecognition = document.getElementById('facialRecognition');
+var sleepPrevention = document.getElementById('sleepPrevention');
 var getResidentBtn = document.getElementById('getResidentBtn');
 var submitResident = document.getElementById('submit_resident');
 var takePhoto = document.getElementById('takePhotoBtn');
@@ -47,6 +48,7 @@ getResidentBtn.onclick = function () {
 	socket.Connect();
 }
 
+
 /* Starts questionaire use case */
 questionaire.onclick = function () {
 	socket = new LightSocket(ip, startQuestionaire);
@@ -69,7 +71,20 @@ facialRecognition.onclick = function () {
 		}
   socket.Connect();
 
-}
+};
+
+
+/* Start prevention use case */
+/* Starts questionaire use case */
+sleepPrevention.onclick = function () {
+	socket = new LightSocket(ip, startSleepPrevention);
+	ip = validateIPAddress(ipAddress.value);
+	if (!ip) {
+		console.log("You must connect to a robot first.");
+		return;
+  }   
+	socket.Connect();
+};
 
 
 /* Test stop button  */
