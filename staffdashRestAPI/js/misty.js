@@ -46,7 +46,7 @@ function takePhoto(){
 
 /* Getting the startSkill() api and starting the questionaire skill. */
 function startQuestionaire() {	
-	var residentName=document.getElementById("result");
+	var residentName = document.getElementById("residentSearch").value;
 	$.ajax({
 		method: 'GET',
 		url: `http://localhost:1234/resident/?name=${residentName}`,
