@@ -1,5 +1,6 @@
 const questionaireID = '22a75504-95b3-4e57-b0ba-bb476ffb4bce';
 const facialRecognitionID = 'febce520-c85d-4a52-bf0a-48de02190f79';
+const autismQuesitonaireID = '71224d1b-7e57-4b0b-b0d6-3f3d37bca45f';
 
 //Let misty pause to give her time to register and excute command
 
@@ -45,14 +46,35 @@ function takePhoto(){
 
 /* Getting the startSkill() api and starting the questionaire skill. */
 function startQuestionaire() {	
-	
-	
-		axios.post(`http://` + ip + `/api/skills/start?skill=${questionaireID}`, {
-				Skill: questionaireID
+	var residentName = document.getElementById("residentSearch").value;
+	$.ajax({
+		method: 'GET',
+		url: `http://localhost:1234/resident/?name=${residentName}`,
+		dataType: 'json'
+	}).done(function (data) {
+		if(data[0].condition !== 'Autism'){
+
+			axios.post(`http://` + ip + `/api/skills/start?skill=${questionaireID}`, {
+					Skill: questionaireID
+			})
+				.then(response => (console.log(response)))
+				.then(() => {
+					console.log("Questionaire skill is starting...");
+				})
+				.catch(err => (console.log(err)))
+		}
+		else{
+			console.log("PASS!");
+			axios.post(`http://` + ip + `/api/skills/start?skill=${autismQuesitonaireID}`, {
+				Skill: autismQuesitonaireID
+			})
+				.then(response => (console.log(response)))
+				.then(() => {
+					console.log("Autism questionaire is starting...");
+				})
+				.catch(err => (console.log(err)))
+			}
 		})
-			.then(response => (console.log(response)))
-			.then(console.log("Questionaire skill is starting..."))
-			.catch(err => (console.log(err)))
 };
 
 function startFacialRecognition() {
@@ -86,7 +108,6 @@ async function startFaceTraining() {
 	console.log("starting face training");
 	var residentName = document.getElementById("residentSearch").value;
 	axios.post("http://" + ip + "/api/faces/training/start", {
-
 		FaceId: residentName
 	});
 	await sleep(20000);
@@ -132,9 +153,7 @@ async function mistyGetResident() {
 
 /*Checks if face is in the Misty database.  */
 async function _FaceRecognition(data) {
-
 	var person = data.message.personName;
-
 	try {
 		if (data.message.personName !== "unknown person" && data.message.personName !== null && data.message.personName !== undefined) {
 			//await sleep(5000);
@@ -180,13 +199,11 @@ function getInfo(residentName) {
 		url: `http://localhost:1234/resident/?name=${residentName}`,
 		dataType: 'json'
 	}).done(function (data) {
-
 		$('#result').append('<h3>' + data[0].name + '</h3> <p>' + 'Age: ' + data[0].age + '</p>' +
 			'<p>' + 'Location: ' + data[0].location + '</p>' +
 			'<p>' + 'Condition: ' + data[0].condition + '</p>'
 		);
-		console.log(data);
-		
+		console.log(data);	
 	});
 }
 
@@ -200,9 +217,9 @@ function getBattery(){
 	.then(response => response.json())
 	//.then(jsonData => console.log(jsonData.result.chargePercent))
 	.then(jsonData => {
-		var batteryLevel = jsonData.result.chargePercent;
-		console.log(batteryLevel);
-		$('#battery').append('<h3>'+ batteryLevel * (100) + '%' +'<h3>');
+		//var batteryLevel = jsonData.result.chargePercent;
+		//console.log(batteryLevel);
+		//$('#battery').append('<h3>'+ batteryLevel * (100) + '%' +'<h3>');
 	})
 }
 
