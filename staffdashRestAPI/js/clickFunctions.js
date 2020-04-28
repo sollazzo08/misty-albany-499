@@ -1,6 +1,6 @@
 var ipAddress = document.getElementById('ip');
 var connect = document.getElementById('connect');
-var stopSkill = document.getElementById('testStopSkill');
+var stopSkills = document.getElementById('stopSkills');
 var questionaire = document.getElementById('questionaire');
 var residentSearch = document.getElementById('residentSearch');
 var facialRecognition = document.getElementById('facialRecognition');
@@ -54,7 +54,8 @@ questionaire.onclick = function () {
 	if (!ip) {
 		console.log("You must connect to a robot first.");
 		return;
-	}   
+  }   
+
 	socket.Connect();
 };
 
@@ -66,13 +67,14 @@ facialRecognition.onclick = function () {
 			console.log("You must connect to a robot first.");
 			return;
 		}
-	socket.Connect();
+  socket.Connect();
+
 }
 
 
 /* Test stop button  */
-stopSkill.onclick = function () {
-	stopSkill();
+stopSkills.onclick = function () {
+	getCurrentRunningSkills();
 };
 
 

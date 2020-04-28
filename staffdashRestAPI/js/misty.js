@@ -85,17 +85,35 @@ function startFacialRecognition() {
 			.then(console.log("Facial Recognition is starting..."))
 			.catch(err => (console.log(err)))
 };
-/*
-function stopSkill(skill){
-	let skill = skillBeingStopped
-		axios.post(`http://`+ ip + `/api/skills/cancel?/skill=${facialRecognitionID}`, {
-				Skill: facialRecognitionID
+
+//gets list og all running skills by unique ID
+function getCurrentRunningSkills(){	
+	axios.get(`http://`+ ip + `/api/skills/running`, {
+	})
+		.then(console.log("Getting list of skills currently running..."))
+		.then(function(response){
+			let array = response.data.result;			//array of skill ID's of the currently running skills
+			stopSkill(array);
+
 		})
-			.then(response => (console.log(response)))
-			.then(console.log("Stopping SKill"))
-			.catch(err => (console.log(err)))
+		.catch(err => (console.log(err)))
+
+}
+
+//stops all running skills
+function stopSkill(uniqueIDArray){
+	//looops through array of skill Id's and cancel each skill
+	for(var i = 0; i < uniqueIDArray.length; i++){
+			axios.post(`http://`+ ip + `/api/skills/cancel?/skill=${uniqueIDArray[i].startupArguments.skill}`, {
+					Skill: uniqueIDArray[i].startupArguments.skill
+			})
+				.then(response => (console.log(response)))
+				.then(console.log("Stopping SKill"))
+				.catch(err => (console.log(err)))
+				
+		}
 };
-*/
+
 
 /*******************************************************Everything under here is for Get Resident Button********************************************************************************/
 
