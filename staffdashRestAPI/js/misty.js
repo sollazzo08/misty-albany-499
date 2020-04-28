@@ -1,6 +1,7 @@
 const questionaireID = '22a75504-95b3-4e57-b0ba-bb476ffb4bce';
 const facialRecognitionID = 'febce520-c85d-4a52-bf0a-48de02190f79';
 const autismQuesitonaireID = '71224d1b-7e57-4b0b-b0d6-3f3d37bca45f';
+const sleepPreventionID = '1cde7616-1f78-49e2-9cb1-de7827e98dee';
 
 //Let misty pause to give her time to register and excute command
 
@@ -84,6 +85,15 @@ function startFacialRecognition() {
 			.then(response => (console.log(response)))
 			.then(console.log("Facial Recognition is starting..."))
 			.catch(err => (console.log(err)))
+};
+
+function startSleepPrevention(){
+	axios.post(`http://` + ip + `/api/skills/start?skill=${sleepPreventionID}`, {
+		Skill: sleepPreventionID
+	})
+	.then(response => (console.log(response)))
+	.then(console.log("Sleep prevention is starting..."))
+	.catch(err => (console.log(err)))
 };
 
 //gets list og all running skills by unique ID
