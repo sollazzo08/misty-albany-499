@@ -182,39 +182,44 @@ async function mistyGetResident() {
 /*Checks if face is in the Misty database.  */
 async function _FaceRecognition(data) {
 	var person = data.message.personName;
+
 	try {
 		if (data.message.personName !== "unknown person" && data.message.personName !== null && data.message.personName !== undefined) {
 			//await sleep(5000);
 			await getInfo(data.message.personName);
 			console.log(`A face was recognized. Hello there ${data.message.personName}!`);
-
+			
 			//POST http://192.168.1.151/api/audio/play
 			Promise.race([
-				fetch('http://192.168.1.151/api/audio/play?fileName=face.wav', {
+				fetch(`http://` + ip + `/api/tts/speak?text=Hello ${person}&flush=false`, {
 					method: 'POST',
-					body: '{ "fileName":"face.wav","volume":null }'
-				}),
-				new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
-			])
-			.then(response => response.json())
-			.then(jsonData => console.log(jsonData))
-			/*
-			Promise.race([
-					fetch(`http://` + ip + `/api/tts/speak?text=Hello ${person}&flush=false`, {
-						method: 'POST',
-						body: `{ "text":"Hello ${person}","flush":false,"utteranceId":null }`
+					body: `{ "text":"Hello ${person}","flush":false,"utteranceId":null }`
 					}),
 					new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
 				])
 				.then(response => response.json())
 				.then(jsonData => console.log(jsonData))
-			*/
-			// Unsubscribe from the FaceRecognition WebSocket.
-			socket.Unsubscribe("FaceRecognition");
-			// Use Axios to issue a POST command to the 
-			// endpoint for the StopFaceRecognition command.
-			axios.post("http://" + ip + "/api/faces/recognition/stop");
-		}
+			
+				
+				// Unsubscribe from the FaceRecognition WebSocket.
+				socket.Unsubscribe("FaceRecognition");
+				// Use Axios to issue a POST command to the 
+				// endpoint for the StopFaceRecognition command.
+				axios.post("http://" + ip + "/api/faces/recognition/stop");
+			} 
+			if(data.message.personName == "unknown person" && data.message.personName == null && data.message.personName == undefined){
+
+				Promise.race([
+					fetch('http://192.168.1.151/api/audio/play?fileName=face.wav', {
+						method: 'POST',
+						body: '{ "fileName":"face.wav","volume":null }'
+					}),
+					new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
+				])
+				.then(response => response.json())
+				.then(jsonData => console.log(jsonData))
+			}
+			
 	} catch (e) {
 		console.log("Error: " + e);
 	}
