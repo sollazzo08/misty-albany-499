@@ -138,10 +138,15 @@ function _SpeechCaptured(data) {
     misty.Debug("Success = " + success);
     if (success == true && filename == "capture_Dialogue.wav"){
             misty.Debug("captured recording after wake word - " + filename);
-            misty.PlayAudio(filename);
+            misty.Debug("Time to Process " + filename);
+            misty.GetAudioFile(filename, "ProcessAudioFile");
     }
-    misty.Debug("Time to Process " + filename);
-    misty.GetAudioFile(filename, "ProcessAudioFile");
+    else{
+        misty.Debug("Going to wake up");
+        wakeUp();
+    }
+    //misty.Debug("Time to Process " + filename);
+    //misty.GetAudioFile(filename, "ProcessAudioFile");
     /*
     //make sure speech captured
     else 
@@ -185,7 +190,10 @@ function ProcessAudioFile(data) {
 
 // Handles response from Dialogflow agent
 function ProcessDialogFlowResponse(data) {
-    
+    if(data == 'no response'){
+        misty.Debug("there is no data");
+        intent = 'sleep';
+    }
     // Gets the intent and parameters from the response
     let response = JSON.parse(data.Result.ResponseObject.Data)
     let intent = response.queryResult.intent.displayName;
@@ -195,7 +203,7 @@ function ProcessDialogFlowResponse(data) {
     misty.Debug("Intent: " + intent);
     misty.Debug("Input text: " + response.queryResult.queryText);
     
-    if(intent == "Sleep Detection - yes"){
+    if(response.queryResult.queryText){
         //Misty makes a happy face and moves her arms to show she's happy.
         animateCompliance();
         misty.Debug("Good! You're awake!");
@@ -208,9 +216,12 @@ function ProcessDialogFlowResponse(data) {
         //This ends the skill, put back after testing something 4-27-2020
         //misty.CancelSkill("1cde7616-1f78-49e2-9cb1-de7827e98dee");
         misty.ChangeLED(255, 0, 0);
-        misty.StartFaceRecognition();
+        misty.StartFaceDetection();
         registerFaceRec();
 
+    }
+    else{
+        wakeUp();
     }
     /*
     else if(intent == "Audio File"){
@@ -231,20 +242,17 @@ function ProcessDialogFlowResponse(data) {
         processResponse();
     }
     */
-    
-    //Either Misty didn't understand what the user said or the user didn't say anything
-    //She plays an alarm, prompts user to again and listens again for a response
-   else {
-       //maybe this'll work *shrug*
-       misty.PlayAudio("Warning Siren.mp3", 10);
-       misty.Pause(5000);
-       misty.PlayAudio("sleep_detect.wav", 90);
-       misty.Pause(5000);
-       misty.Debug("Misty didn't hear user or didn't understand response. Please try again.")
-       //listens for response again.
-       processResponse();
-   }
-   
+}
+
+function wakeUp(){
+    //maybe this'll work *shrug*
+    misty.PlayAudio("Warning Siren.mp3", 10);
+    misty.Pause(7000);
+    misty.PlayAudio("sleep_detect.wav", 90);
+    misty.Pause(5000);
+    misty.Debug("Misty didn't hear user or didn't understand response. Please try again.")
+    //listens for response again.
+    processResponse();
 }
 
 function animateCompliance() {
@@ -315,20 +323,18 @@ function processResponse() {
     //Misty starts listening, overwrites previous recording audio file
     //Does NOT require Misty's key phrase to start speaking
     misty.Debug("Misty is listening for a response!")
-    misty.CaptureSpeech(false, true);
+    misty.CaptureSpeech(false, true, 5000, 7000);
     misty.Pause(2000);
     misty.AddReturnProperty("SpeechCaptured", "Filename");
     misty.AddReturnProperty("SpeechCaptured", "Success");
     misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
 }
 
-function registerFaceRec() 
-{
+function registerFaceRec() {
     misty.RegisterEvent("FaceRec", "FaceRecognition", 1000, false);
 }
 
-function _FaceRec(data) 
-{
+function _FaceRec(data) {
     var faceDetected = data.PropertyTestResults[0].PropertyParent.Label;
 
     misty.Debug(faceDetected);
@@ -352,6 +358,8 @@ function _FaceRec(data)
         misty.DisplayText(faceDetected);
         //Since person is recognized we end the skill
         misty.CancelSkill("1cde7616-1f78-49e2-9cb1-de7827e98dee");
-
     }
 }
+
+//function _TimerEvent() {
+    //if (_count < 5) {

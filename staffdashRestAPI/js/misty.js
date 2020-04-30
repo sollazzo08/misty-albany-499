@@ -1,10 +1,9 @@
 const questionaireID = '22a75504-95b3-4e57-b0ba-bb476ffb4bce';
 const facialRecognitionID = 'febce520-c85d-4a52-bf0a-48de02190f79';
-const autismQuesitonaireID = '71224d1b-7e57-4b0b-b0d6-3f3d37bca45f';
+//const autismQuesitonaireID = '71224d1b-7e57-4b0b-b0d6-3f3d37bca45f';
 const sleepPreventionID = '1cde7616-1f78-49e2-9cb1-de7827e98dee';
 
 //Let misty pause to give her time to register and excute command
-
 function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -14,15 +13,14 @@ function sleep(ms) {
 //GET http://192.168.1.151/api/cameras/rgb?base64=false&fileName=test_3&displayOnScreen=false&overwriteExisting=false
 function takePhoto(){
 	var fileName = document.getElementById("takePhoto").value;
-	
 		axios.get('http://'+ ip +`/api/cameras/rgb?base64=false&fileName=&displayOnScreen=false&overwriteExisting=false`, {
 			FileName: fileName,
 			headers : { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-       }
+        		'Content-Type': 'application/json',
+        		'Accept': 'application/json'
+       		}
 		})
-	.then(console.log("misty took a photo"))
+		.then(console.log("misty took a photo"))
 
 
 	Promise.race([
@@ -38,7 +36,6 @@ function takePhoto(){
 	
 	console.log(blob);
 	console.log(url);
-
 }
 
 //Now you can use this URL to set the source of your element
@@ -53,8 +50,10 @@ function startQuestionaire() {
 		url: `http://localhost:1234/resident/?name=${residentName}`,
 		dataType: 'json'
 	}).done(function (data) {
-		if(data[0].condition !== 'Autism'){
-
+		/* This is where Misty is able to read through user information that is stored in the MongoDB, and pull out the condition.
+		   Whoever is working on this, use the if-else statement to and set it equal to the name of the condition that is set for that 
+		   questionnaire. */
+		if(data[0].condition){
 			axios.post(`http://` + ip + `/api/skills/start?skill=${questionaireID}`, {
 					Skill: questionaireID
 			})
@@ -64,17 +63,17 @@ function startQuestionaire() {
 				})
 				.catch(err => (console.log(err)))
 		}
-		else{
-			console.log("PASS!");
-			axios.post(`http://` + ip + `/api/skills/start?skill=${autismQuesitonaireID}`, {
-				Skill: autismQuesitonaireID
-			})
-				.then(response => (console.log(response)))
-				.then(() => {
-					console.log("Autism questionaire is starting...");
-				})
-				.catch(err => (console.log(err)))
-			}
+		//else{
+			//console.log("PASS!");
+			//axios.post(`http://` + ip + `/api/skills/start?skill=${autismQuesitonaireID}`, {
+				//Skill: autismQuesitonaireID
+			//})
+				//.then(response => (console.log(response)))
+				//.then(() => {
+					//console.log("Autism questionaire is starting...");
+				//})
+				//.catch(err => (console.log(err)))
+			//}
 		})
 };
 
