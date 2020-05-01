@@ -12,6 +12,7 @@ function sleep(ms) {
 
 /*Take picture endpoint */
 //GET http://192.168.1.151/api/cameras/rgb?base64=false&fileName=test_3&displayOnScreen=false&overwriteExisting=false
+/*
 function takePhoto(){
 	var fileName = document.getElementById("takePhoto").value;
 	
@@ -40,6 +41,7 @@ function takePhoto(){
 	console.log(url);
 
 }
+*/
 
 //Now you can use this URL to set the source of your element
 //You may also simply use this as a Url for the source field of an html element
@@ -241,19 +243,14 @@ function getInfo(residentName) {
 }
 
 function getBattery(){
-	Promise.race([
-		fetch('http://'+ ip + '/api/battery', {
-			method: 'GET'
-		}),
-		new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
-	])
-	.then(response => response.json())
-	//.then(jsonData => console.log(jsonData.result.chargePercent))
-	.then(jsonData => {
-		//var batteryLevel = jsonData.result.chargePercent;
-		//console.log(batteryLevel);
-		//$('#battery').append('<h3>'+ batteryLevel * (100) + '%' +'<h3>');
-	})
+
+		axios.get('http://'+ ip + '/api/battery')
+		.then(function(response){
+			$('#battery').append('<h3>'+ response.data.result.chargePercent * (100) + '%' +'<h3>')
+		})
+		. catch(err => console.log(err)
+	)
+	
 }
 
 
