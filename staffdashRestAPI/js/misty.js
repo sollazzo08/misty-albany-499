@@ -205,7 +205,7 @@ async function _FaceRecognition(data) {
 				
 				// Unsubscribe from the FaceRecognition WebSocket.
 				socket.Unsubscribe("FaceRecognition");
-				// Use Axios to issue a POST command to the 
+				// Use Axios to issue a POST commandd to the 
 				// endpoint for the StopFaceRecognition command.
 				axios.post("http://" + ip + "/api/faces/recognition/stop");
 			} 
