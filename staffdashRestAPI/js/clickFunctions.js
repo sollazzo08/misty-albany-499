@@ -7,7 +7,7 @@ var facialRecognition = document.getElementById('facialRecognition');
 var sleepPrevention = document.getElementById('sleepPrevention');
 var getResidentBtn = document.getElementById('getResidentBtn');
 var submitResident = document.getElementById('submit_resident');
-var takePhoto = document.getElementById('takePhotoBtn');
+//var takePhoto = document.getElementById('takePhotoBtn');
 //var uploadImage = documanet.getElementById('res_image');
 var ip;
 
@@ -93,12 +93,12 @@ stopSkills.onclick = function () {
 };
 
 
-/* Take Photo button */
+/* Take Photo button 
  takePhotoBtn.onclick = function() {
    console.log('test');
     takePhoto();
  }
-
+*/
 /*
 
 /*S3 bucket image upload 
