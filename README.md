@@ -18,7 +18,7 @@
  Steve Harding, Living Resources
 
 ## Skills recommended for this project
- - Vanilla JavaScript (good understand of JavaScript will help ALOT!)
+ - Vanilla JavaScript (good understanding of JavaScript will help ALOT!)
  - mongoose.js
  - express.js
  - node.js
@@ -81,6 +81,34 @@ You are now all set and are connected to DialogFlow! You are now also able to us
 
 
 ### How to use the Misty Interface
+
+The Misty Interface was designed for staff members at Living Resources to use along side Misty and residents. 
+Staff members can: 
+
+- Add a resident to the Mongo Database 
+- Get a residents information and display it on screen
+- Connect to Misty 
+- Demonstate Use Cases
+
+### How to use: 
+
+### If working with new resident:
+ 1. Connect to Misty with her IP Address
+ 2. Add resident information with the add resident form 
+ 3. Ask resident to look at misty
+ 4. Enter residents name into get resident field 
+ 5. Allow 20-25 seconds for misty to train residents face
+ 5. Misty now knows the resdient by face 
+
+### If working with existing resident: 
+ 1. Connect to Misty with her IP Address  
+ 2. Ask resident to look at misty
+ 3. Enter residents name into get resident field 
+ 4. Resident information will display on screen 
+ 
+### Interacting with Use Cases:
+
+Staff member can interact with 
 
 
 
