@@ -14,7 +14,7 @@
 2. Staff/Resident Database (Face Recognition)
 3. Sleep Prevention 
 
-### Sponser
+### Sponsor
  Steve Harding, Living Resources
 
 ## Skills recommended for this project
@@ -22,9 +22,9 @@
  - mongoose.js
  - express.js
  - node.js
- - bootstrap
- - Knowledge of MongoDB (NOSQL)
- - Knowledge of googles Dialogflow service
+ - Bootstrap
+ - Knowledge of MongoDB (No-SQL)
+ - Knowledge of Google's DialogFlow API
  - Misty SDK [Misty Documentation](https://docs.mistyrobotics.com/)
 
 Note: Misty can be developed with .NET SDK which requires C# knowledge
@@ -54,7 +54,31 @@ NOW, you have to configure some settings with MongoDB Atlas and Dialogflow
 5. Copy and paste string into config.js
 6. You can now run the server/database by running command node app.js in the root of Database folder
 
-### Dialogflow Instructions
+### DialogFlow Instructions
+
+[DialogFlow](https://dialogflow.com/) is Google's Machine Learning API that makes it easier to create a user-product conversation. The API will detect the input, and will use their Machine Learning to associate the input with an intent, and match the input to the intent's training phrase, which will output a fulfillment message. We will go over how to set up DialogFlow with Misty, convert the audio input to text, find the appropriate intent, and send the audio response back to Misty.  
+
+Note: A good thing to read would be the [DialogFlow documentation](https://cloud.google.com/dialogflow/docs/), it's a really good read to help you fully understand DialogFlow as it can be quite confusing.
+
+1. Go to DialogFlow and login/sign up. 
+2. Go to the console, and click on *Create Agent*, and name it whatever you want to. Choose *Create a new Google project*.
+3. Click *Intents*, and click on *Create Intent*. Name the intent whatever you want.
+4. Fill in the Training Phrase with whatever you want to use to start the intent. Then, you can fill in the responses with what you want to use to respond to the training phrases. Click *Save*, and wait for the gear on the left subbar to finish turning. Then, you can test it out in the console on the right.
+5. If you want your intent to branch into another intent appropriately, create a Context Variable in the *Context* section in your DialogFlow intent. Make the starting intent are the *input* and *output*, and to the next intent use the same variable name as the input. 
+
+Thanks to Misty Robotics, they already had a way to easily connect to DialogFlow with their [Misty Conceirge Template](https://github.com/MistySampleSkills/Misty-Concierge-Template). However, the *testingAudio.js*, *autismQuestionaire.js*, and *sleepDetect.js* were modified to our needs while we used the connection that was made in the conceirge template.
+
+DialogFlow doesn't do direct matching input, since it's all Machine Learning it will feed the intent into the engine and will match to anything relatively close to the training phrase it's associated with. 
+
+We will now go over how to grab the credentials from Google Cloud Services, and putting them into files to create a connection and let Misty listen and talk with DialogFlow. 
+
+1. In your DialogFlow agent, click on the gear wheel on the left next to your agent's name. 
+2. Click on the link that is in *Service Account*.
+3. Click on the triple dots under *Action* on the account that has the label, *Dialogflow Integration*, and choose *Create key*. Choose json, and go to the .json file it generated. Keep this safe, you will need it and you can't get another one. 
+4. Create a *credentials* function, and use *misty.Set()* to give your credentials a name and a way for Misty to get them. Put in your *auth_uri* and your *project_id*. 
+
+You are now all set and are connected to DialogFlow! You are now also able to use the TTS API to generate the audio file into text to work with DialogFlow. 
+
 
 ### How to use the Misty Interface
 
