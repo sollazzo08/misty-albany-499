@@ -17,7 +17,7 @@
 ### Sponser
  Steve Harding, Living Resources
 
-## Skills recommened for this project
+## Skills recommended for this project
  - Vanilla JavaScript (good understand of JavaScript will help ALOT!)
  - mongoose.js
  - express.js
