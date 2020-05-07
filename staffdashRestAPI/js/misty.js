@@ -55,7 +55,8 @@ function startQuestionaire() {
 		/* This is where Misty is able to read through user information that is stored in the MongoDB, and pull out the condition.
 		   Whoever is working on this, use the if-else statement to and set it equal to the name of the condition that is set for that 
 		   questionnaire. */
-		if(data[0].condition){
+	//	if(data[0].condition){
+			sleep(3000);
 			axios.post(`http://` + ip + `/api/skills/start?skill=${questionaireID}`, {
 					Skill: questionaireID
 			})
@@ -64,7 +65,7 @@ function startQuestionaire() {
 					console.log("Questionaire skill is starting...");
 				})
 				.catch(err => (console.log(err)))
-		}
+//		}
 		//else{
 			//console.log("PASS!");
 			//axios.post(`http://` + ip + `/api/skills/start?skill=${autismQuesitonaireID}`, {
@@ -275,7 +276,7 @@ function stopTest2() {
 		strokeWidth: 4,
 		trailWidth: 1,
 		easing: 'easeInOut',
-		duration: 25000,
+		duration: 23000,
 		text: {
 			autoStyleContainer: false
 		},
