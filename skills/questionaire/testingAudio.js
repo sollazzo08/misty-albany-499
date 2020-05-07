@@ -1,4 +1,3 @@
-  
 // Kicks everything off!
 getAccessToken();
 
@@ -66,10 +65,11 @@ function startToListen() {
     misty.StartKeyPhraseRecognition(true, true, 15000);
 }
 
-function _VoiceRecord(){
+function _VoiceRecord(data){
+    let filename = data.AdditionalResults[0];
     misty.Debug("Speech captured.")
-    misty.GetAudioFile("capture_HeyMisty.wav", "ProcessAudioFile");
-    ProcessAudioFile("capture_HeyMisty.wav");
+    misty.GetAudioFile(filename, "ProcessAudioFile");
+    ProcessAudioFile(filename);
 }
 
 function _SpeechCaptured(data) {
@@ -110,7 +110,7 @@ function ProcessAudioFile(data) {
     });
 
     let accessToken = misty.Get("googleAccessToken");
-
+    misty.Pause(4000);
     misty.SendExternalRequest("POST", url, authorizationType, accessToken, dialogFlowParams, false, false, null, "application/json", "ProcessDialogFlowResponse");
 }
 
@@ -245,7 +245,7 @@ function ProcessDialogFlowResponse(data) {
         misty.Pause(2000);
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
         speakTheText();
-        misty.Pause(5000);
+        misty.Pause(4000);
         misty.CaptureSpeech(false, true);
         misty.Pause(2000);
         misty.AddReturnProperty("SpeechCaptured", "Filename");
@@ -277,7 +277,7 @@ function ProcessDialogFlowResponse(data) {
         misty.Pause(2000);
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
         speakTheText();
-        misty.Pause(5000);
+        misty.Pause(8000);
         misty.CaptureSpeech(false, true);
         misty.Pause(2000);
         misty.AddReturnProperty("SpeechCaptured", "Filename");

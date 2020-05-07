@@ -212,11 +212,13 @@ function ProcessDialogFlowResponse(data) {
         speakTheText();
        
         misty.Pause(7000);
+
+        misty.MoveHead(0, 0, 0, null, 1);
         
         //This ends the skill, put back after testing something 4-27-2020
         //misty.CancelSkill("1cde7616-1f78-49e2-9cb1-de7827e98dee");
         misty.ChangeLED(255, 0, 0);
-        misty.StartFaceDetection();
+        misty.StartFaceRecognition();
         registerFaceRec();
 
     }
