@@ -1,4 +1,3 @@
-  
 // Kicks everything off!
 getAccessToken();
 
@@ -46,7 +45,7 @@ function SetAccessToken(data) {
 }
 
 function startToListen() {
-    animateStandard();
+    //animateStandard();
 
     misty.AddReturnProperty("VoiceRecord", "Filename");
     misty.AddReturnProperty("VoiceRecord", "Success");
@@ -58,22 +57,19 @@ function startToListen() {
     misty.ChangeLED(255, 255, 255);
 
     misty.Debug("Misty is listening, say 'Hey, Misty' to start!");
-    //misty.PlayAudio("s_Joy3.wav");
-    //misty.DisplayImage("e_Content.jpg");
+    misty.PlayAudio("s_Joy3.wav");
+    misty.DisplayImage("e_Content.jpg");
 
     // We start key phrase recognition and set voice recording to begin
     // immediately after Misty heads the wake word ("Hey, Misty")
-    //misty.StartKeyPhraseRecognition(true, true, 15000);
-    misty.Set("textToSpeak", "Hello, whatever you are trying to test works. I know you have autism, and with some simple conditional logic I can ask you some questions geared" + 
-    "towards that. I am going to cancel now...", false);
-    speakTheText();
-    misty.Pause(5000);
+    misty.StartKeyPhraseRecognition(true, true, 15000);
 }
 
 function _VoiceRecord(){
+    let filename = data.AdditionalResults[0];
     misty.Debug("Speech captured.")
-    misty.GetAudioFile("capture_HeyMisty.wav", "ProcessAudioFile");
-    ProcessAudioFile("capture_HeyMisty.wav");
+    misty.GetAudioFile(filename, "ProcessAudioFile");
+    //ProcessAudioFile("capture_HeyMisty.wav");
 }
 
 function _SpeechCaptured(data) {
@@ -130,107 +126,7 @@ function ProcessDialogFlowResponse(data) {
     misty.Debug("Intent: " + intent);
     misty.Debug("Input text: " + response.queryResult.queryText);
 
-    if(intent == "Confirm"){
-        misty.Debug("All right.");
-        misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
-        speakTheText();
-        misty.Pause(4000);
-        startToListen();
-    }
-    if (intent == "ChangeLED") {
-        misty.Debug("Color: " + parameters.color);
-        switch(parameters.color) {
-            case "red":
-                misty.ChangeLED(255, 0, 0);
-                misty.Pause(2000);
-                misty.Pause(5000);
-        misty.CaptureSpeech(false, true);
-        misty.Pause(2000);
-        misty.AddReturnProperty("SpeechCaptured", "Filename");
-        misty.AddReturnProperty("SpeechCaptured", "Success");
-        misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
-                break;
-            case "blue":
-                misty.Change
-                misty.Pause(5000);
-        misty.CaptureSpeech(false, true);
-        misty.Pause(2000);
-        misty.AddReturnProperty("SpeechCaptured", "Filename");
-        misty.AddReturnProperty("SpeechCaptured", "Success");
-        misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
-            case "green":
-                misty.ChangeLED(0, 255, 0);
-                animateCompliance();
-                misty.Pause(5000);
-        misty.CaptureSpeech(false, true);
-        misty.Pause(2000);
-        misty.AddReturnProperty("SpeechCaptured", "Filename");
-        misty.AddReturnProperty("SpeechCaptured", "Success");
-        misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
-                break;
-            case "yellow":
-                misty.ChangeLED(255,255,51);
-                animateCompliance();
-                misty.Pause(5000);
-        misty.CaptureSpeech(false, true);
-        misty.Pause(2000);
-        misty.AddReturnProperty("SpeechCaptured", "Filename");
-        misty.AddReturnProperty("SpeechCaptured", "Success");
-        misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
-                break;
-            case "orange":
-                misty.ChangeLED(255,128,0);
-                animateCompliance();
-                misty.Pause(5000);
-        misty.CaptureSpeech(false, true);
-        misty.Pause(2000);
-        misty.AddReturnProperty("SpeechCaptured", "Filename");
-        misty.AddReturnProperty("SpeechCaptured", "Success");
-        misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
-                break;
-            case "pink":
-                misty.ChangeLED(255,51,187);
-                animateComplaince();
-                misty.Pause(5000);
-        misty.CaptureSpeech(false, true);
-        misty.Pause(2000);
-        misty.AddReturnProperty("SpeechCaptured", "Filename");
-        misty.AddReturnProperty("SpeechCaptured", "Success");
-        misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
-                break;
-            case "white":
-                misty.ChangeLED(255, 255, 255);
-                animateComplaince();
-                misty.Pause(5000);
-        misty.CaptureSpeech(false, true);
-        misty.Pause(2000);
-        misty.AddReturnProperty("SpeechCaptured", "Filename");
-        misty.AddReturnProperty("SpeechCaptured", "Success");
-        misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
-                break;
-            case "random":
-                misty.ChangeLED(Math.floor((Math.random() * 255) + 1), Math.floor((Math.random() * 10) + 1), Math.floor((Math.random() * 10) + 1));
-                animateComplaince();
-                misty.Pause(5000);
-        misty.CaptureSpeech(false, true);
-        misty.Pause(2000);
-        misty.AddReturnProperty("SpeechCaptured", "Filename");
-        misty.AddReturnProperty("SpeechCaptured", "Success");
-        misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
-                break;
-            default:
-                misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
-                speakTheText();
-                misty.Pause(5000);
-                misty.CaptureSpeech(false, true);
-                misty.Pause(2000);
-                misty.AddReturnProperty("SpeechCaptured", "Filename");
-                misty.AddReturnProperty("SpeechCaptured", "Success");
-                misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
-                break;
-        }
-    }
-    else if(intent == "Questionaire"){
+    if(intent == "Questionaire"){
         animateStandard();
         misty.Pause(2000);
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
@@ -239,9 +135,14 @@ function ProcessDialogFlowResponse(data) {
         //startToListen();
         misty.CaptureSpeech(false, true);
         misty.Pause(2000);
-        misty.AddReturnProperty("SpeechCaptured", "Filename");
-        misty.AddReturnProperty("SpeechCaptured", "Success");
-        misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
+        //misty.AddReturnProperty("SpeechCaptured", "Filename");
+        misty.AddReturnProperty("VoiceRecord", "Filename");
+        misty.AddReturnProperty("VoiceRecord", "Filename");
+        misty.RegisterEvent("VoiceRecord", "VoiceRecord", 1000, true);
+        //misty.AddReturnProperty("SpeechCaptured", "Success");
+        //misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
+        misty.Pause(4000);
+        //misty.DeleteAudio("capture_HeyMisty.wav");
     }
     else if(intent == "Questionnaire - NotFeelingOkay"){
         misty.Pause(1000);
@@ -323,7 +224,7 @@ function ProcessDialogFlowResponse(data) {
         misty.AddReturnProperty("SpeechCaptured", "Success");
         misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
     }
-    else if(intent == "Questionnaire - NothingWrong"){
+    /*else if(intent == "Questionnaire - NothingWrong"){
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
         speakTheText();
         misty.Pause(5000);
@@ -344,7 +245,7 @@ function ProcessDialogFlowResponse(data) {
         misty.AddReturnProperty("SpeechCaptured", "Filename");
         misty.AddReturnProperty("SpeechCaptured", "Success");
         misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
-    }
+    }*/
     else if(intent == "Cancel"){
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
         speakTheText();
