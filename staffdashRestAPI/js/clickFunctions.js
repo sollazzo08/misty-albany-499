@@ -1,3 +1,8 @@
+/*
+  This file is a sub program of Misty.js
+  It handles all the clikc events on the frontend
+*/
+
 var ipAddress = document.getElementById('ip');
 var connect = document.getElementById('connect');
 var stopSkills = document.getElementById('stopSkills');
@@ -93,80 +98,12 @@ stopSkills.onclick = function () {
 };
 
 
-/* Take Photo button 
- takePhotoBtn.onclick = function() {
-   console.log('test');
-    takePhoto();
- }
+
+/* 
+ * Converts ip into a string that can be read 
+ * This code snippet was used from Misty Robotics Sandbox code 
+ * https://github.com/MistyCommunity/REST-API/blob/master/Sandbox/Find%20Face%20-%20Do%20Something/app.js
 */
-/*
-
-/*S3 bucket image upload 
-$(document).ready(function () { 
-	$(".custom-file-input").on("change", function() {
-	var file = $(this).val().split("\\").pop();
-	const selectedFile = document.getElementById('res_img').files[0];
- 	console.log(selectedFile);
- 	console.log(selectedFile.name);
-  
-  let fileParts = selectedFile.name.split('.');
-  console.log(fileParts);
-	
-  let fileName = fileParts[0];
-	let fileType = fileParts[1];
-
-	console.log("Preparing the upload");
-	
-	axios.post("http://localhost:1234/sign_s3",{
-    fileName : fileName,
-    fileType : fileType
-  })
-  .then(response => {
-    var returnData = response.data.data.returnData;
-    console.log(returnData);
-    
-    var signedRequest = returnData.signedRequest;
-    console.log(signedRequest);
-    
-    var url = returnData.url;
-    console.log(url);
-    
-    console.log("Recieved a signed request " + signedRequest);
-  
-    /*
-      local: http://localhost:9000/image
-      ec2: http://ec2-3-17-26-49.us-east-2.compute.amazonaws.com:9000/image
-    
-    axios.post("http://localhost:1234/image", {                      
-      url: url
-    }).then(() => console.log("Sent url to db"))
-      .catch((err) => console.log(err));
-   // Put the fileType in the headers for the upload
-    var options = {
-      headers: {
-        'Content-Type': fileType
-      }
-    };
-    axios.put(signedRequest,file,options)
-    .then(result => {
-      console.log("Response from s3")
-      console.log(options);
-      
-      
-    })
-    .catch(error => {
-      alert("ERROR " + JSON.stringify(error));
-    })
-  })
-  .catch(error => {
-    alert(JSON.stringify(error));
-  })
-})
-});
-
-*/
-
-/* Converts ip into a string that can be read */
 function validateIPAddress(ip) {
 	var ipNumbers = ip.split(".");
 	var ipNums = new Array(4);
