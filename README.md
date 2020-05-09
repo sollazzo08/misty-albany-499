@@ -110,7 +110,7 @@ Staff members can:
  4. Resident information will display on screen 
  
 
-
+####	This code is licenesed under the GNU General Public License 3.0 (GPLv3). For more information about this license, please visit https://www.gnu.org/licenses/gpl-3.0.en.html or view the LICENSE file included in this repository.
 
 
 

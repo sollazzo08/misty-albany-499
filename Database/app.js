@@ -5,10 +5,6 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const app = express();
-var imagesRouter = require('../Database/image/image.controller');
-var awsCtrl = require("../Database/awsCtrl");
-
-
 
 // parse requests
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -26,8 +22,7 @@ const mongoose = require('mongoose');
 const config = require('./config');
 require('./resident/resident.routes.js')(app);
 
-app.use('/sign_s3', awsCtrl);
-app.use('/image', imagesRouter);
+
 
 mongoose.Promise = global.Promise;
 
