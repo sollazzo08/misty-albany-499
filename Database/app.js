@@ -1,4 +1,4 @@
-// get dependencies
+// Get dependencies
 const express = require('express');
 const bodyParser = require('body-parser');
 

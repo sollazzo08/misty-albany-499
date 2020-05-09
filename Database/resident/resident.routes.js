@@ -1,5 +1,12 @@
+/*********************************************************
+ *  This file is used as the backend to our User Inteface. Theses are the REST API routes that are going to be
+ *  used to CREATE and READ the resident information off our database.
+ * 
+ *  We were helped by this article to help us understand Rest API routes and interacting them with MongoDB:
+ *      https://bezkoder.com/node-express-mongodb-crud-rest-api/
+ * 
+ **********************************************************/
 
-const express = require('express');
 const resident = require('./resident.controller');
 const Resident = require('./resident.model');
 //onst router = express.Router();
