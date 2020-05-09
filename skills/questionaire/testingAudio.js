@@ -1,4 +1,13 @@
-// Kicks everything off!
+/***************************************************************************************
+*    This file is used to help Misty connect to the DialogFlow API and Text-to-Speech API, 
+*    and verbally communicate with a resident. 
+*
+* 
+*   We borrowed lines 11-144, 395-462(ish) from:
+*        https://github.com/MistySampleSkills/Misty-Concierge-Template/blob/master/JavaScript/conciergeBaseTemplate/conciergeBaseTemplate.js
+*   However, some of it has been modified to match more along our needs for the project.
+*/
+
 getAccessToken();
 
 function initiateTokenRefresh() {
@@ -18,6 +27,8 @@ function _UpdateAuthToken(data)
     misty.Debug("Updated Auth Token");
 }
 
+
+//These are the necessary credentials needed to log into DialogFlow API and Text-to-Speech API. 
 function creds(){
     misty.Set("cloudFunctionAuthTokenURL", "https://us-central1-mistyvoicecommand-otapmj.cloudfunctions.net/get-access-token", false);
     misty.Set("GoogleCloudProjectID", "mistyvoicecommand-otapmj", false);
@@ -26,8 +37,7 @@ function creds(){
 }
 creds();
 
-// Creates a unique session ID for opening a session with our Dialogflow
-// agent.
+//Creates a unique session ID for opening a session with our Dialogflow agent
 function getSessionId(){
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
@@ -37,6 +47,7 @@ function getAccessToken(){
     misty.SendExternalRequest("POST",  _params.getAccessTokenUrl, null, null, null, false, false, null, "application/json", "SetAccessToken");
 }
 
+// We set the access token, and then Misty will start to listen for her keyphrase (Hey, Snapdragon!)
 function SetAccessToken(data) {
     let response = JSON.parse(data.Result.ResponseObject.Data)
     misty.Set("googleAccessToken", response.accessToken);
@@ -44,6 +55,10 @@ function SetAccessToken(data) {
     startToListen();
 }
 
+/* 
+*   Misty animates her standard position (line 395-ish), and will start to listen for her keyphrase. She will trigger a 
+*   noise, and then will capture the input with her mic
+*/
 function startToListen() {
     animateStandard();
 
@@ -56,7 +71,7 @@ function startToListen() {
     misty.Pause(1000);
     misty.ChangeLED(255, 255, 255);
 
-    misty.Debug("Misty is listening, say 'Hey, Misty' to start!");
+    misty.Debug("Misty is listening, say 'Hey, Snapdragon' to start!");
     misty.PlayAudio("s_Joy3.wav");
     misty.DisplayImage("e_Content.jpg");
 
@@ -65,6 +80,7 @@ function startToListen() {
     misty.StartKeyPhraseRecognition(true, true, 15000);
 }
 
+// Misty's register event. This will process the audio file of the user's vocal input.
 function _VoiceRecord(data){
     let filename = data.AdditionalResults[0];
     misty.Debug("Speech captured.")
@@ -72,6 +88,7 @@ function _VoiceRecord(data){
     ProcessAudioFile(filename);
 }
 
+/* USELESS!!!!!!!!!
 function _SpeechCaptured(data) {
     misty.Debug("SpeechCaptured!");
     let filename = data.AdditionalResults[0];
@@ -84,14 +101,18 @@ function _SpeechCaptured(data) {
     misty.Debug("Time to Process " + filename);
     misty.GetAudioFile(filename, "ProcessAudioFile");
 }
+*/
 
-// Sends speech recording to DialogFlow. Dialogflow uses 
-// speech-to-text to match the recording with an "intent" we define in
-// the DialogFlow project, then sends a response back with intent data.
-// We use this response data to change Misty's LED.
+/*
+*   Sends speech recording to DialogFlow. Dialogflow uses speech-to-text to match the recording with an "intent" 
+*   we define in the DialogFlow project (look over the README if there is confusion on how to work with intents), 
+*   then sends a response back with intent data. We use this response data to change Misty's LED.
+*/
 function ProcessAudioFile(data) {
-    misty.Debug("Process Audio File: " + data);
-    // Set variable with base64 data for capture_HeyMisty audio file
+    //This usually doesn't work
+    //misty.Debug("Process Audio File: " + data);
+
+    // Set variable with base64 data for the audio file
     let base64 = data.Result.Base64;
 
     // Set up params for request to DialogFlow
@@ -114,7 +135,12 @@ function ProcessAudioFile(data) {
     misty.SendExternalRequest("POST", url, authorizationType, accessToken, dialogFlowParams, false, false, null, "application/json", "ProcessDialogFlowResponse");
 }
 
-// Handles response from Dialogflow agent
+/*
+*   Handles response from Dialogflow agent. Use a series of if-else checks to see which intent was matched by DialogFlow,
+*   call the speakTheText() function if you want Misty to vocally respond to a user. 
+*
+*   The idea was gathered from the link above but it was heavily modified to fit our needs.
+*/
 function ProcessDialogFlowResponse(data) {
     
     // Gets the intent and parameters from the response
@@ -126,6 +152,7 @@ function ProcessDialogFlowResponse(data) {
     misty.Debug("Intent: " + intent);
     misty.Debug("Input text: " + response.queryResult.queryText);
 
+    // If-else intent pairing we get from DialogFlow
     if(intent == "Confirm"){
         misty.Debug("All right.");
         misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
@@ -140,79 +167,79 @@ function ProcessDialogFlowResponse(data) {
                 misty.ChangeLED(255, 0, 0);
                 misty.Pause(2000);
                 misty.Pause(5000);
-        misty.CaptureSpeech(false, true);
-        misty.Pause(2000);
-        misty.AddReturnProperty("SpeechCaptured", "Filename");
-        misty.AddReturnProperty("SpeechCaptured", "Success");
-        misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
+                misty.CaptureSpeech(false, true);
+                misty.Pause(2000);
+                misty.AddReturnProperty("SpeechCaptured", "Filename");
+                misty.AddReturnProperty("SpeechCaptured", "Success");
+                misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
                 break;
             case "blue":
                 misty.Change
                 misty.Pause(5000);
-        misty.CaptureSpeech(false, true);
-        misty.Pause(2000);
-        misty.AddReturnProperty("SpeechCaptured", "Filename");
-        misty.AddReturnProperty("SpeechCaptured", "Success");
-        misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
+                misty.CaptureSpeech(false, true);
+                misty.Pause(2000);
+                misty.AddReturnProperty("SpeechCaptured", "Filename");
+                misty.AddReturnProperty("SpeechCaptured", "Success");
+                misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
             case "green":
                 misty.ChangeLED(0, 255, 0);
                 animateCompliance();
                 misty.Pause(5000);
-        misty.CaptureSpeech(false, true);
-        misty.Pause(2000);
-        misty.AddReturnProperty("SpeechCaptured", "Filename");
-        misty.AddReturnProperty("SpeechCaptured", "Success");
-        misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
+                misty.CaptureSpeech(false, true);
+                misty.Pause(2000);
+                misty.AddReturnProperty("SpeechCaptured", "Filename");
+                misty.AddReturnProperty("SpeechCaptured", "Success");
+                misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
                 break;
             case "yellow":
                 misty.ChangeLED(255,255,51);
                 animateCompliance();
                 misty.Pause(5000);
-        misty.CaptureSpeech(false, true);
-        misty.Pause(2000);
-        misty.AddReturnProperty("SpeechCaptured", "Filename");
-        misty.AddReturnProperty("SpeechCaptured", "Success");
-        misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
+                misty.CaptureSpeech(false, true);
+                misty.Pause(2000);
+                misty.AddReturnProperty("SpeechCaptured", "Filename");
+                misty.AddReturnProperty("SpeechCaptured", "Success");
+                misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
                 break;
             case "orange":
                 misty.ChangeLED(255,128,0);
                 animateCompliance();
                 misty.Pause(5000);
-        misty.CaptureSpeech(false, true);
-        misty.Pause(2000);
-        misty.AddReturnProperty("SpeechCaptured", "Filename");
-        misty.AddReturnProperty("SpeechCaptured", "Success");
-        misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
+                misty.CaptureSpeech(false, true);
+                misty.Pause(2000);
+                misty.AddReturnProperty("SpeechCaptured", "Filename");
+                misty.AddReturnProperty("SpeechCaptured", "Success");
+                misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
                 break;
             case "pink":
                 misty.ChangeLED(255,51,187);
                 animateComplaince();
                 misty.Pause(5000);
-        misty.CaptureSpeech(false, true);
-        misty.Pause(2000);
-        misty.AddReturnProperty("SpeechCaptured", "Filename");
-        misty.AddReturnProperty("SpeechCaptured", "Success");
-        misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
+                misty.CaptureSpeech(false, true);
+                misty.Pause(2000);
+                misty.AddReturnProperty("SpeechCaptured", "Filename");
+                misty.AddReturnProperty("SpeechCaptured", "Success");
+                misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
                 break;
             case "white":
                 misty.ChangeLED(255, 255, 255);
                 animateComplaince();
                 misty.Pause(5000);
-        misty.CaptureSpeech(false, true);
-        misty.Pause(2000);
-        misty.AddReturnProperty("SpeechCaptured", "Filename");
-        misty.AddReturnProperty("SpeechCaptured", "Success");
-        misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
+                misty.CaptureSpeech(false, true);
+                misty.Pause(2000);
+                misty.AddReturnProperty("SpeechCaptured", "Filename");
+                misty.AddReturnProperty("SpeechCaptured", "Success");
+                misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
                 break;
             case "random":
                 misty.ChangeLED(Math.floor((Math.random() * 255) + 1), Math.floor((Math.random() * 10) + 1), Math.floor((Math.random() * 10) + 1));
                 animateComplaince();
                 misty.Pause(5000);
-        misty.CaptureSpeech(false, true);
-        misty.Pause(2000);
-        misty.AddReturnProperty("SpeechCaptured", "Filename");
-        misty.AddReturnProperty("SpeechCaptured", "Success");
-        misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
+                misty.CaptureSpeech(false, true);
+                misty.Pause(2000);
+                misty.AddReturnProperty("SpeechCaptured", "Filename");
+                misty.AddReturnProperty("SpeechCaptured", "Success");
+                misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
                 break;
             default:
                 misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
@@ -361,6 +388,10 @@ function ProcessDialogFlowResponse(data) {
     }
 }
 
+/*  Our animate functions. These help Misty be a bit more realistic.
+*
+*   animateCompliance was borrowed from link mentioned above.
+*/
 function animateCompliance() {
     misty.MoveHeadDegrees(-15, 0, 0, 100);
     misty.PlayAudio("s_Acceptance.wav");
@@ -387,10 +418,14 @@ function animateStandard() {
     misty.MoveArms(0, 0, 100, 100);
 }
 
+// BROKEN!!!!!
+/*
 function playRegisterNoise() {
     misty.PlayAudio("s_SystemSuccess.wav");
 }
+*/
 
+// This uses the TTS API and gets Misty to read out the text that was produced by DialogFlow.
 function speakTheText() {
     var arguments = JSON.stringify({
         'input': {
@@ -415,6 +450,7 @@ function speakTheText() {
     misty.Debug("Text sent to Google Text to Speech API");
 }
 
+// Turn the audio file to Base64.
 function _Base64In(data) {
     misty.Debug("Audio(base64) in from Google TTS API");
     misty.Debug(JSON.stringify(data));

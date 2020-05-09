@@ -1,3 +1,11 @@
+/*********************************************************
+ *  This file is used to serve as the backend of the User Interface, theses are the controllers to connect to our
+ *  MongoDB atlas that we use to hold resident information. 
+ * 
+ *  We were helped by this article to help us understand REST API and interacting with MongoDB:
+ *      https://bezkoder.com/node-express-mongodb-crud-rest-api/
+ **********************************************************/
+
 const Resident = require('./resident.model');
 
 //Create a new resident
@@ -23,6 +31,7 @@ exports.create = (req, res) => {
     });
 };
 
+/*
 //Retrieving all residents 
 exports.findAll = (req, res) => {
     Resident.find()
@@ -35,15 +44,16 @@ exports.findAll = (req, res) => {
         });
     });
 };
+*/
 
- exports.findByName = (req,res) => {
+exports.findByName = (req,res) => {
     var name = req.param('name'); 
     Resident.find({name: name})
         .then(resident => res.json(resident))
         .catch(err => res.status(404).json({success: false}))
-    };
+};
          
-
+/*
 //Retrieving a single resident
 exports.findById = (req, res) => {
     Resident.findById(req.params.id)
@@ -129,3 +139,4 @@ exports.delete = (req, res) => {
         });
     });
 };
+*/
