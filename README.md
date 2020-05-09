@@ -10,9 +10,12 @@
 
 ## Use Cases 
 
-1. Resident Questionnaire
-2. Staff/Resident Database (Face Recognition)
+1. Questionnaire
+    - Misty starts Questionnaire with the resident 
+2. Facial Detection 
+    - Misty looks around for familiar faces 
 3. Sleep Prevention 
+    - Misty prevents staff members from sleeping 
 
 ### Sponsor
  Steve Harding, Living Resources
@@ -36,7 +39,7 @@ Note: Misty can be developed with .NET SDK which requires C# knowledge
 1. Clone this project to your computer
 2. Open the repo with VScode
 3. In the root of the Database folder install all dependencies with npm install
-3. Go to index.html file inside the staffdashRestAPI folder and open it on a local server
+3. Go to `index.html` file inside the staffdashRestAPI folder and open it on a local server
 4. To run it on local server use VScode's Go Live extenstion or any other live-server plugins
 
 NOW, you have to configure some settings with MongoDB Atlas and Dialogflow
@@ -51,8 +54,8 @@ NOW, you have to configure some settings with MongoDB Atlas and Dialogflow
     - Create a MongoDB User
     - Copy the connection string which should look something like this: 
        mongodb+srv://test:<password>@cluster0-hcuzi.mongodb.net/test?retryWrites=true&w=majority
-5. Copy and paste string into config.js
-6. You can now run the server/database by running command node app.js in the root of Database folder
+5. Copy and paste string into `config.js`
+6. You can now run the server/database by running command `node app.js` in the root of Database folder
 
 ### DialogFlow Instructions
 
@@ -85,7 +88,7 @@ You are now all set and are connected to DialogFlow! You are now also able to us
 The Misty Interface was designed for staff members at Living Resources to use along side Misty and residents. 
 Staff members can: 
 
-- Add a resident to the Mongo Database 
+- Add a resident to the MongoDB Database 
 - Get a residents information and display it on screen
 - Connect to Misty 
 - Demonstate Use Cases
@@ -98,7 +101,7 @@ Staff members can:
  3. Ask resident to look at misty
  4. Enter residents name into get resident field 
  5. Allow 20-25 seconds for misty to train residents face
- 5. Misty now knows the resdient by face 
+ 5. Misty now knows the resdient by face and the resident info will be posted on screen
 
 ### If working with existing resident: 
  1. Connect to Misty with her IP Address  
@@ -106,9 +109,11 @@ Staff members can:
  3. Enter residents name into get resident field 
  4. Resident information will display on screen 
  
-### Interacting with Use Cases:
 
-Staff member can interact with 
+
+
+
+
 
 
 
