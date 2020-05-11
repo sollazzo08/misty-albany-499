@@ -1,0 +1,18 @@
+{
+    "Name": "sleepDetect",
+    "UniqueId": "1cde7616-1f78-49e2-9cb1-de7827e98dee",
+    "Description": "Simple sleep detect skill",
+    "StartupRules": [
+      "Manual",
+      "Robot"
+    ],
+    "Language": "javascript",
+    "BroadcastMode": "verbose",
+    "TimeoutInSeconds": 600,
+    "CleanupOnCancel": true,
+    "WriteToLog": false,
+    "Parameters": {
+        "getAccessTokenUrl": "https://us-central1-mistyvoicecommand-otapmj.cloudfunctions.net/get-access-token ",
+		    "projectID": "mistyvoicecommand-otapmj"
+    }
+  }

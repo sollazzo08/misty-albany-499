@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js"></script>
+	<!--lightclient and lightSocket are tools that make it easier to develop skills for Misty.-->
+	<script src="../staffdashRestAPI/tools/lightClient.js"></script>
+	<script src="../staffdashRestAPI/tools/lightSocket.js"></script>
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Raleway:400,300,600,800,900" rel="stylesheet" type="text/css">
+	<script src="../staffdashRestAPI/tools/progessbar.js"></script>
+	<title>Misty Interface</title>
+</head>
+
+<body>
+	<!--Navbar: where theconnection to Misty is made-->
+	<div class="container-fluid bg-dark text-light">
+		<h5>Enter Misty's IP</h5>
+		<input type="text" id="ip" placeholder="0.0.0.0" />
+		<button type="button" class="btn btn-info" id="connect">Connect</button>
+		<p id="success"></p>
+		<p id="failure"></p>
+	</div>
+	<!--Container thats holds the staff and resident search bars -->
+	<div class="row container-fluid mt-5 mb-4 mx-0">
+		<!-- REMOVED STAFF SEARCH MIGHT ADD BACK
+
+					<form class="form-inline justify-content-center" action="/">
+						<input class="form-control" type="text" placeholder="Staff">
+						<button class="btn btn-info" type="submit">Search</button>
+						<div class="mr-2"></div>
+						<button class="btn btn-info" type="button" data-toggle="modal" data-target="#staffModal">Add Staff</button>
+					</form>
+				-->
+		<div class="col-md-6">
+			<!--Resident Search bar-->
+			<form class="form-inline justify-content-center" action="">
+				<input id="residentSearch" class="form-control" type="search" placeholder="Resident">
+				<button id="getResidentBtn" class="btn btn-info" type="button">Get Resident</button>
+				<div class="mr-2"></div>
+				<button class="btn btn-info" type="button" data-toggle="modal" data-target="#residentModal">Add
+					Resident</button>
+			</form>
+			<!--Resient Pop up Modal-->
+			<div class="modal" id="residentModal">
+				<div class="modal-dialog modal-dialog-centered modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title">Resident-Form</h4>
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+						</div>
+						<div class="modal-body">
+							<!--Make sure to change action address to ec2 instance url when deploying to AWS or else GET/POST requests will fail
+										~ 'http://ec2-3-17-26-49.us-east-2.compute.amazonaws.com:1234/resident'
+								 -->
+							<form id="residentForm" class="resident-form form-horizontal" action="http://localhost:1234/resident">
+								<div class="form-group">
+									Resident ID:
+									<input class="form-control col-sm-2" type="number" id="r_id" placeholder=""><br>
+									Name:
+									<input class="form-control col-sm-3" type="text" id="name" placeholder=""><br>
+									Age:
+									<input class="form-control col-sm-1" type="number" id="age" placeholder=""><br>
+									<!--
+										DOB:
+										<input class="form-control col-sm-2" type="number" id="dob" placeholder=""><br>
+
+									-->
+									Location:
+									<input class="form-control" type="text" id="location" placeholder=""><br>
+									<!--
+ 		
+										
+									-->
+								
+									Condition:
+									<input class="form-control" type="text" id="condition" placeholder=""><br>
+									<input id="submit_resident"class="btn btn-info" type="submit" value="Add Resident">
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Staff Pop up Modal-->
+			<div class="modal" id="staffModal">
+				<div class="modal-dialog modal-dialog-centered modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title">Staff-Form</h4>
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+						</div>
+						<div class="modal-body">
+							<!--Make sure to change action address to ec2 instance url when deploying to AWS or else GET/POST requests will fail
+										~ 'http://ec2-3-17-26-49.us-east-2.compute.amazonaws.com:1234/staff'
+								 -->
+							<form id="staffForm" class="resident-form form-horizontal" action="http://localhost:1234/staff">
+								<div class="form-group">
+									Staff ID:
+									<input class="form-control col-sm-1" type="number" id="s_id" placeholder=""><br>
+									Name:
+									<input class="form-control col-sm-3" type="text" id="s_name" placeholder=""><br>
+									Age:
+									<input class="form-control col-sm-1" type="number" id="s_age" placeholder=""><br>
+									DOB:
+									<input class="form-control col-sm-2" type="number" id="s_dob" placeholder=""><br>
+									Location:
+									<input class="form-control" type="text" id="s_location" placeholder=""><br>
+											
+											<input class="form-control" type="text" id="res_image" placeholder=""><br> 	
+									Email:
+									<input class="form-control" type="text" id="s_email" placeholder=""><br>
+									<input class="btn btn-info" type="submit" value="Add Staff">
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--Spacer for the top level row-->
+		<div class="col-md-1"></div>
+		<!--Take Photo section-->
+		<div class="col-md-3 pr-5">
+			<!--
+				<div class="row border justify-content-center text-center ">
+					<h3 class="">Take Photo</h3>
+					<form class="form-inline justify-content-center" action="">
+						<input id="takePhoto" class="form-control" type="search" placeholder="Filename">
+						<button id="takePhotoBtn" class="btn btn-info" type="button">Take Photo</button>
+						<div class="mr-2"></div>
+					</form>
+				</div>
+			-->
+			</div>
+		<!--Display for Misty's battery level-->
+		<div class="col-md-2">
+			<div class="row justify-content-center border mb-4">
+				<div class="text-center" id="battery">
+					<h3>Battery Level</h3>			
+					<h3 class="" id="battery"></h3>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--Photo and use case section-->
+	<div class="row container-fluid px-0">
+		<div class="col-md-4 px-0">
+			<div class="card mx-auto px-0" style="width: 16rem;">
+				<img class="card-img-top img-responsive" src="./public/placeholder-profile.jpg" alt="image">
+				<div id="result" class="card-body">
+					<h3 class="card-title"></h3>
+					<hr>
+					<p class="card-text"></p>
+					<!--<a href="#" class="btn btn-info">See Profile</a> -->
+				</div>
+			</div>
+		</div>
+		<!--Use case section-->
+		<div class="col-md-6 flex-container pr-5">
+			<h3 class="text-center">Use Cases</h3>
+			<hr>
+			<div class="row-md-4 text-center mb-4">
+				<button class="btn btn-info" id="questionaire">Questionaire</button>
+			</div>
+			<div class="row-md-4 text-center mb-4">
+				<button class="btn btn-info" id="facialRecognition">Facial Recognition</button>
+			</div>
+			<div class="row text-center mb-4">
+				<div class="col-sm-4">
+
+				</div>
+				<div class="col-sm-4">
+					<button class="btn btn-info" id="sleepPrevention" type="submit">Sleep Prevention</button>					
+				</div>
+				<div class="col-sm-4">
+					<button class="btn btn-danger" id="stopSkills" type="submit">STOP SKILLS</button>		
+				</div>
+				
+			</div>
+			<hr>
+		</div>
+		<div class="col-md-2 flex-container mx-0 my-0">	
+			<div class="row justify-content-center border text-center">
+				<h3>Face Training Progress</h3>
+				<div id="container"></div>
+			</div>
+		</div>
+	</div>
+	<div class="row mr-3">
+		<div class="col-md-10">
+		</div>
+	</div>
+	<!--
+			<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
+			 integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		 -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+	</script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+	</script>
+
+	<script>
+		/*Get the user input and sends a post request to the database. Creates a resident*/
+		$(document).ready(function () {
+			$('#residentForm').submit(function (e) {
+				e.preventDefault();
+
+				var r_id = $('#r_id').val();
+				var name = $('#name').val();
+				var age = $('#age').val();
+				var dob = $('#dob').val();
+				var location = $('#location').val();
+				var condition = $('#condition').val();
+				var res_image = $('#res_image').val();
+				var url = $(this).attr('action');
+
+				$.post(url, {
+					r_id: r_id,
+					name: name,
+					age: age,
+					dob: dob,
+					location: location,
+					//image: null,
+					condition: condition,
+					//response: null
+				}).done(function (data) {
+					console.log('Post Saved');
+					console.log(data);
+				});
+			});
+		});
+
+
+	</script>
+	<script src="../staffdashRestAPI/js/clickFunctions.js"></script>
+	<script src="../staffdashRestAPI/js/misty.js"></script>
+
+</body>
+
+</html>
