@@ -1,3 +1,13 @@
+/******************************************************************************************
+ * PLEASE NOTE - WE ARE NOTE USING THIS CODE IN OUR ICSI 499 SPRING 2020 PROJECT *
+ * 
+ * This is a simple "sleep detection" skill. When started, Misty will tell the staff member 
+ * to verify that they are awake. 
+ * 
+ * We borrowed from https://github.com/MistySampleSkills/Misty-Concierge-Template/blob/master/JavaScript/conciergeBaseTemplate/conciergeBaseTemplate.js
+ * in order to access Google Dialogflow API
+*/
+
 // Kicks everything off!
 getAccessToken();
 

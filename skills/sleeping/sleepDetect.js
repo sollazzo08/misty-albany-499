@@ -1,6 +1,9 @@
-/*
+/******************************************************************************************
  * This is a simple "sleep detection" skill. When started, Misty will tell the staff member 
  * to verify that they are awake. 
+ * 
+ * We borrowed from https://github.com/MistySampleSkills/Misty-Concierge-Template/blob/master/JavaScript/conciergeBaseTemplate/conciergeBaseTemplate.js
+ * in order to access Google Dialogflow API
 */
 
 //function to set Misty in a "home" position, looking straight ahead, arms to the side, etc
@@ -33,6 +36,7 @@ function _UpdateAuthToken(data)
     misty.Debug("Updated Auth Token");
 }
 
+//credentials required to access Google Dialogflow 
 function creds(){
     misty.Set("cloudFunctionAuthTokenURL", "https://us-central1-mistyvoicecommand-otapmj.cloudfunctions.net/get-access-token", false);
     misty.Set("GoogleCloudProjectID", "mistyvoicecommand-otapmj", false);
@@ -41,8 +45,7 @@ function creds(){
 }
 creds();
 
-// Creates a unique session ID for opening a session with our Dialogflow
-// agent.
+// Creates a unique session ID for opening a session with our Dialogflow agent.
 function getSessionId(){
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
@@ -57,79 +60,26 @@ function SetAccessToken(data){
     misty.Set("googleAccessToken", response.accessToken);
 
     startToListen();
-    //askIfAsleep();
 }
-/*
-//Initially prompts user to see if they're awake
-function askIfAsleep(){
-    //misty asks
-    misty.Speak("Say audio file", true);
-    misty.Pause(3000);
-    processResponse();
-}
-*/
+
+//This function makes Misty ask the staff member to make a sound if they are awake, and listens for any soudn response.
 function startToListen() {
-    /*
-    misty.AddReturnProperty("VoiceRecord", "Filename");
-    misty.AddReturnProperty("VoiceRecord", "Success");
-    misty.AddReturnProperty("VoiceRecord", "ErrorCode");
-    misty.AddReturnProperty("VoiceRecord", "ErrorMessage");
-    misty.RegisterEvent("VoiceRecord", "VoiceRecord", 10, true);
-
-    misty.Pause(1000);
-    misty.ChangeLED(255, 255, 255);
-    misty.Debug("Misty is listening, say 'Hey Snapdragon' to start the conversation!")
-    misty.DisplayImage("e_Content.jpg");
-    misty.PlayAudio("s_Joy3.wav");
-    */
-
-   //misty.Set("textToSpeak", "Hello, are you awake? Please verify by saying I'm awake or I'm up.", false);
-   //speakTheText();
+  
    misty.PlayAudio("sleep_detect.wav", 90);
    misty.Pause(7000);
-   processResponse();
-    // We start key phrase recognition and set voice recording to begin
-    // immediately after Misty heads the wake word ("Hey, Misty")
-    //misty.StartKeyPhraseRecognition(true, true, 15000); 
-    
+   processResponse(); 
 }
 
 
-
+//In this function, the audio file of audio input is processed.
 function _VoiceRecord(){
     misty.Debug("Speech captured.")
     misty.GetAudioFile("capture_HeyMisty.wav", "ProcessAudioFile");
     ProcessAudioFile("capture_HeyMisty.wav");
-
-    /*
-    var filename = data.AdditionalResults[0];
-    var success = data.AdditionalResults[1];
-    var errorCode = data.AdditionalResults[2];
-    var errorMessage = data.AdditionalResults[3];
-
-    // If voice recording is successful, send to Dialogflow
-    if (success) 
-    {
-        misty.Debug("Audio Recording Successful");
-        //misty.GetAudioFile(filename, "callDialogflow");
-        //if (misty.Get("findFace")) misty.MoveHead(-20, 20, null, 95);
-        misty.DisplayImage("e_ContentLeft.jpg");
-        misty.PlayAudio("s_SystemSuccess.wav", 100);
-    }
-    // Otherwise, print the error message
-    else 
-    {
-        misty.Debug("Error: " + errorCode + ". " + errorMessage);
-        misty.Set("langCodeForTTS", "en-US", false);
-        misty.Set("textToSpeak", "Come again?", false);
-        //misty.Set("textToSpeak", "English, Motherfucker, do you speak it?", false);
-        speakTheText();
-    }
-
-    misty.Set("recordingAudio", false, false);
-    */
 }
 
+//This was for testing purposes, to make sure that Misty was recording an audio file we had her play it back for 
+//before continuing on in the conversation
 function _SpeechCaptured(data) {
     misty.Debug("SpeechCaptured!");
     let filename = data.AdditionalResults[0];
@@ -145,18 +95,6 @@ function _SpeechCaptured(data) {
         misty.Debug("Going to wake up");
         wakeUp();
     }
-    //misty.Debug("Time to Process " + filename);
-    //misty.GetAudioFile(filename, "ProcessAudioFile");
-    /*
-    //make sure speech captured
-    else 
-    {
-        misty.Set("langCodeForTTS", "en-US", false);
-        misty.Set("textToSpeak", "Speech not captured.", false);
-        //misty.Set("textToSpeak", "English, Motherfucker, do you speak it?", false);
-        speakTheText();
-    }
-    */
 }
 
 // Sends speech recording to DialogFlow. Dialogflow uses 
@@ -189,6 +127,9 @@ function ProcessAudioFile(data) {
 }
 
 // Handles response from Dialogflow agent
+// This was heavily inspired by the code found here  https://github.com/MistySampleSkills/Misty-Concierge-Template/blob/master/JavaScript/conciergeBaseTemplate/conciergeBaseTemplate.js
+// Checks to see if the staff member has made any sound, if yes Misty prompts them to put their face in front of her camera to face recognise
+// Otherwise, Misty plays an alarm (in an attempt to wake them up) and prompts the user to make a sound again, like she did initially.
 function ProcessDialogFlowResponse(data) {
     if(data == 'no response'){
         misty.Debug("there is no data");
@@ -203,6 +144,7 @@ function ProcessDialogFlowResponse(data) {
     misty.Debug("Intent: " + intent);
     misty.Debug("Input text: " + response.queryResult.queryText);
     
+    //response.queryResult.queryText checks if there is any value for that in the JSON object returned from Dialogflow
     if(response.queryResult.queryText){
         //Misty makes a happy face and moves her arms to show she's happy.
         animateCompliance();
@@ -215,7 +157,7 @@ function ProcessDialogFlowResponse(data) {
 
         misty.MoveHead(0, 0, 0, null, 1);
         
-        //This ends the skill, put back after testing something 4-27-2020
+        //Uncomment the line below to cancel the skill
         //misty.CancelSkill("1cde7616-1f78-49e2-9cb1-de7827e98dee");
         misty.ChangeLED(255, 0, 0);
         misty.StartFaceRecognition();
@@ -223,29 +165,12 @@ function ProcessDialogFlowResponse(data) {
 
     }
     else{
+        //calls wakeUp function 
         wakeUp();
     }
-    /*
-    else if(intent == "Audio File"){
-        misty.Debug("Want to save audio file of Google's text to speech voice. Hopefully this works.");
-        misty.Pause(4000);
-        misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
-        speakTheText();
-        misty.Pause(7000);
-        //processResponse();
-        misty.CancelSkill("1cde7616-1f78-49e2-9cb1-de7827e98dee");
-    }
-    */
-   /*
-    else {
-        misty.Set("textToSpeak", response.queryResult.fulfillmentText, false);
-        speakTheText();
-        misty.Pause(3000);
-        processResponse();
-    }
-    */
 }
 
+//this function makes Misty play an alarm sound in an attempt to wake up the staff member
 function wakeUp(){
     //maybe this'll work *shrug*
     misty.PlayAudio("Warning Siren.mp3", 10);
@@ -257,33 +182,15 @@ function wakeUp(){
     processResponse();
 }
 
+//function to add some personality to Misty
 function animateCompliance() {
     misty.MoveHeadDegrees(-15, 0, 0, 100);
     misty.PlayAudio("s_Acceptance.wav");
     misty.DisplayImage("e_Joy2.jpg");
     misty.MoveArms(0, -25, 100, 100);
 }
-/*
-function animateSadness() {
-    misty.MoveHeadDegrees(25, 0, 0, 100);
-    misty.PlayAudio("e_Sadness.wav");
-    misty.DisplayImage("e_Sadness.jpg");
-    misty.MoveArms(0, 0, 100, 100);
-}
 
-function animateInterest() {
-    misty.MoveHeadDegrees(-15, 0, 0, 100);
-    misty.DisplayImage("e_Confusion.jpg");
-    misty.MoveArms(-25, 25, 100, 100);
-}
-
-function animateStandard() {
-    misty.MoveHeadDegrees(-10, 0, 0, 100);
-    misty.DisplayImage("e_Content.jpg");
-    misty.MoveArms(0, 0, 100, 100);
-}
-*/
-
+// This uses the TTS API and gets Misty to read out the text that was produced by DialogFlow.
 function speakTheText() {
     var arguments = JSON.stringify({
         'input': {
@@ -308,6 +215,7 @@ function speakTheText() {
     misty.Debug("Text sent to Google Text to Speech API");
 }
 
+// Turn the audio file to Base64.
 function _Base64In(data) {
     misty.Debug("Audio(base64) in from Google TTS API");
     misty.Debug(JSON.stringify(data));
@@ -317,7 +225,6 @@ function _Base64In(data) {
     //This one works, go back to this one if anything
     // Saves and plays the Base64-encoded audio data 
     misty.SaveAudio("tts.wav", JSON.parse(data.Result.ResponseObject.Data).audioContent, true, true);
-    //misty.SaveAudio("sleep_detect.wav", JSON.parse(data.Result.ResponseObject.Data).audioContent, true, true);
 }
 
 //Helper function for Misty to process a response in the conversation
@@ -331,7 +238,11 @@ function processResponse() {
     misty.AddReturnProperty("SpeechCaptured", "Success");
     misty.RegisterEvent("SpeechCaptured", "VoiceRecord", 1000, true);
 }
-
+/*
+    The following facial recognition code was Inspired by
+     https://github.com/MistySampleSkills/BlinkAndLookAround/blob/master/BlinkAndLookAround.js
+    and https://github.com/MistyCommunity/JavaScript-SDK/blob/master/Sample%20Code/faceDetection/faceDetection.js
+*/
 function registerFaceRec() {
     misty.RegisterEvent("FaceRec", "FaceRecognition", 1000, false);
 }
@@ -341,6 +252,7 @@ function _FaceRec(data) {
 
     misty.Debug(faceDetected);
 
+    //if face is unknown, made a questioning face
     if (faceDetected == "unknown person") {
         misty.ChangeLED(255, 0, 0);
         misty.DisplayImage("e_Disgust.jpg");
@@ -348,7 +260,10 @@ function _FaceRec(data) {
         misty.Pause(50);
         misty.MoveArmDegrees("left", 70, 50);
         misty.ClearDisplayText();
-    } else if (faceDetected) {
+    } 
+    //if face is recognized make a happy face, say "Hello <insert name here>", and cancel the skill overall
+    else if (faceDetected) 
+    {
         misty.ChangeLED(148, 0, 211);
         misty.PlayAudio("s_Joy.wav");
         misty.DisplayImage("e_Joy2.jpg");
@@ -363,5 +278,3 @@ function _FaceRec(data) {
     }
 }
 
-//function _TimerEvent() {
-    //if (_count < 5) {
