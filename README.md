@@ -38,9 +38,10 @@ Note: Misty can be developed with .NET SDK which requires C# knowledge
 
 1. Clone this project to your computer
 2. Open the repo with VScode
-3. In the root of the Database folder install all dependencies with npm install
-3. Go to `index.html` file inside the staffdashRestAPI folder and open it on a local server
-4. To run it on local server use VScode's Go Live extenstion or any other live-server plugins
+3. Open a terminal instance in VScode, type in `cd Database` then `npm install` to install all the needed dependecies from `package.json`.
+4. In the root of the Database folder install all dependencies with npm install
+5. Go to `index.html` file inside the staffdashRestAPI folder and open it on a local server
+6. To run it on local server use VScode's Go Live extenstion or any other live-server plugins
 
 NOW, you have to configure some settings with MongoDB Atlas and Dialogflow
 
