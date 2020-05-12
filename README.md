@@ -43,6 +43,8 @@ Note: Misty can be developed with .NET SDK which requires C# knowledge
 5. Go to `index.html` file inside the staffdashRestAPI folder and open it on a local server
 6. To run it on local server use VScode's Go Live extenstion or any other live-server plugins
 
+Note: If you want to use the dashboard, you have to run `node app.js` in the Database directory and have it tell you the connect is complete and it is listening to the port before running the dashboard. This is so the app can have access to the dashboard and information will be pulled and added to the database.
+
 NOW, you have to configure some settings with MongoDB Atlas and Dialogflow
 
 ### MongoDB Atlas Instructions
