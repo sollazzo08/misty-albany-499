@@ -21,7 +21,7 @@ module.exports = (route) => {
     //route.get('/resident', resident.findAll);
 
     //Retrieving a single resident from db
-    route.get('/resident/:id', resident.findById);
+  //  route.get('/resident/:id', resident.findById);
 
     route.get('/resident/',
     
@@ -51,10 +51,10 @@ module.exports = (route) => {
       });
 */
     //Update a resident with a r_id
-    route.put('/resident/:r_id', resident.update);
+ //   route.put('/resident/:r_id', resident.update);
 
     //Deleting a resident
-    route.delete('/resident/:r_id', resident.delete);
+ //   route.delete('/resident/:r_id', resident.delete);
 }
 
 /**
